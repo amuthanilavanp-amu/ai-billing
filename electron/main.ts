@@ -154,6 +154,28 @@ function createWindow(): void {
     mainWindow?.focus()
   })
 
+  mainWindow.webContents.on('did-finish-load', () => {
+    setTimeout(async () => {
+      try {
+        const image = await mainWindow?.webContents.capturePage()
+        if (image) {
+          const previewDir = path.join(__dirname, '..', 'public')
+          if (!fs.existsSync(previewDir)) fs.mkdirSync(previewDir, { recursive: true })
+          const previewPath = path.join(previewDir, 'preview.png')
+          fs.writeFileSync(previewPath, image.toPNG())
+          console.log('[Electron] Preview screenshot saved:', previewPath)
+
+          const artifactDir = 'C:\\Users\\DELL\\.gemini\\antigravity\\brain\\58d42da3-1cd9-45a7-85d3-efc75c886549'
+          if (fs.existsSync(artifactDir)) {
+            fs.writeFileSync(path.join(artifactDir, 'preview.png'), image.toPNG())
+          }
+        }
+      } catch (err) {
+        console.error('[Electron] capturePage error:', err)
+      }
+    }, 1500)
+  })
+
   mainWindow.on('closed', () => {
     mainWindow = null
   })

@@ -12,6 +12,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from database import engine, Base, init_db
 from routers import (
@@ -114,6 +115,11 @@ app.include_router(backup.router,        prefix=f"{API}/backup",       tags=["Ba
 @app.get("/health")
 async def health():
     return {"status": "ok", "service": "SmartBiz AI", "version": "1.0.0"}
+
+# ─── Serve Frontend UI at Root ────────────────────────────────────────────────
+DIST_DIR = Path(__file__).resolve().parent.parent / "dist"
+if DIST_DIR.exists():
+    app.mount("/", StaticFiles(directory=str(DIST_DIR), html=True), name="frontend")
 
 # ─── Entry Point ──────────────────────────────────────────────────────────────
 

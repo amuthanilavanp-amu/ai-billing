@@ -21,8 +21,8 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem('smartbiz_token');
       localStorage.removeItem('smartbiz_user');
-      if (window.location.pathname !== '/login') {
-        window.location.href = '/login';
+      if (!window.location.hash.includes('/login')) {
+        window.location.hash = '#/login';
       }
     }
     return Promise.reject(error);
