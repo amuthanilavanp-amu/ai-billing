@@ -220,3 +220,32 @@ def test_ai_assistant():
     )
     assert chat_res.status_code == 200
     assert "response" in chat_res.json()
+
+
+def test_create_custom_user_and_login():
+    """Verify creating a custom username & password, then logging in."""
+    import uuid
+    test_user = f"user_{uuid.uuid4().hex[:6]}"
+    test_pass = "SecurePass123"
+
+    reg = client.post(
+        "/api/v1/auth/register",
+        json={
+            "username": test_user,
+            "password": test_pass,
+            "full_name": "Amuthan Ilavan",
+            "email": f"{test_user}@test.local",
+        },
+    )
+    assert reg.status_code == 200
+    assert reg.json()["username"] == test_user
+    assert "access_token" in reg.json()
+
+    # Log in with the newly created username and password
+    login_res = client.post(
+        "/api/v1/auth/token",
+        data={"username": test_user, "password": test_pass},
+    )
+    assert login_res.status_code == 200
+    assert login_res.json()["username"] == test_user
+    assert "access_token" in login_res.json()

@@ -10,7 +10,8 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from database import get_db
-from models.user_models import User
+from models.user_models import User, UserRole
+from models.company_models import Company
 
 router = APIRouter()
 
@@ -104,20 +105,45 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 
 
 @router.post("/register", response_model=Token)
-def register_first_admin(user_data: UserCreate, db: Session = Depends(get_db)):
-    """Register the first admin user (only when no users exist)."""
-    existing = db.query(User).count()
-    if existing > 0:
-        raise HTTPException(status_code=400, detail="Registration is closed. Contact your administrator.")
+def register_user(user_data: UserCreate, db: Session = Depends(get_db)):
+    """Register a new user / create a new username & password."""
+    clean_username = user_data.username.strip()
+    if not clean_username:
+        raise HTTPException(status_code=400, detail="Username cannot be blank.")
+    if len(user_data.password) < 4:
+        raise HTTPException(status_code=400, detail="Password must be at least 4 characters long.")
+
+    existing_user = db.query(User).filter(User.username == clean_username).first()
+    if existing_user:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Username '{clean_username}' already exists. Please choose a different username or sign in.",
+        )
+
+    clean_email = user_data.email.strip() if user_data.email and user_data.email.strip() else None
+    if clean_email:
+        existing_email = db.query(User).filter(User.email == clean_email).first()
+        if existing_email:
+            clean_email = None  # Don't fail registration if placeholder email clashes
+
+    # Auto-link to existing company if none provided
+    company_id = user_data.company_id
+    if not company_id:
+        first_company = db.query(Company).first()
+        if first_company:
+            company_id = first_company.id
+
+    full_name = user_data.full_name.strip() if user_data.full_name and user_data.full_name.strip() else clean_username
 
     user = User(
-        username=user_data.username,
-        email=user_data.email,
-        full_name=user_data.full_name,
+        username=clean_username,
+        email=clean_email,
+        full_name=full_name,
         hashed_password=get_password_hash(user_data.password),
-        role="admin",
+        role=UserRole.ADMIN,
         is_super_admin=True,
-        company_id=user_data.company_id,
+        company_id=company_id,
+        is_active=True,
     )
     db.add(user)
     db.commit()
@@ -130,7 +156,7 @@ def register_first_admin(user_data: UserCreate, db: Session = Depends(get_db)):
         user_id=user.id,
         username=user.username,
         full_name=user.full_name,
-        role=user.role.value,
+        role=user.role.value if hasattr(user.role, "value") else str(user.role),
         company_id=user.company_id,
     )
 
