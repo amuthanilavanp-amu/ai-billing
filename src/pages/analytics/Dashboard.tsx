@@ -48,7 +48,7 @@ export const Dashboard: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <LayoutDashboard className="text-blue-400" />
+            <LayoutDashboard className="text-orange-500" />
             Executive Dashboard
           </h1>
           <p className="text-xs text-slate-400 mt-1">
@@ -97,7 +97,7 @@ export const Dashboard: React.FC = () => {
 
         <div className="stat-card">
           <span className="stat-label">GST Collected (MTD)</span>
-          <span className="stat-value text-blue-400">
+          <span className="stat-value text-orange-400">
             ₹{summary ? summary.sales?.total_tax?.toLocaleString('en-IN') : '0.00'}
           </span>
           <span className="stat-change text-slate-400">CGST + SGST + IGST liability</span>
@@ -120,12 +120,12 @@ export const Dashboard: React.FC = () => {
               const heightPct = Math.round((day.total_sales / maxSale) * 100);
               return (
                 <div key={i} className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end group">
-                  <div className="opacity-0 group-hover:opacity-100 transition text-[10px] text-blue-400 font-bold whitespace-nowrap">
+                  <div className="opacity-0 group-hover:opacity-100 transition text-[10px] text-orange-400 font-bold whitespace-nowrap">
                     ₹{day.total_sales}
                   </div>
                   <div
                     style={{ height: `${Math.max(heightPct, 4)}%` }}
-                    className="w-full bg-blue-600/40 hover:bg-blue-500 rounded-t transition-all"
+                    className="w-full bg-orange-500/40 hover:bg-orange-500 rounded-t transition-all"
                   />
                   <span className="text-[10px] text-slate-500 font-mono">
                     {day.date.split('-').slice(1).join('/')}

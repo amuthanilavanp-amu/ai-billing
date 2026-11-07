@@ -11,7 +11,7 @@ from pathlib import Path
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from database import engine, Base, init_db
@@ -116,10 +116,31 @@ app.include_router(backup.router,        prefix=f"{API}/backup",       tags=["Ba
 async def health():
     return {"status": "ok", "service": "SmartBiz AI", "version": "1.0.0"}
 
-# ─── Serve Frontend UI at Root ────────────────────────────────────────────────
+# ─── Serve Frontend UI at Root & SPA Fallback ────────────────────────────────
 DIST_DIR = Path(__file__).resolve().parent.parent / "dist"
-if DIST_DIR.exists():
-    app.mount("/", StaticFiles(directory=str(DIST_DIR), html=True), name="frontend")
+
+if (DIST_DIR / "assets").exists():
+    app.mount("/assets", StaticFiles(directory=str(DIST_DIR / "assets")), name="static_assets")
+
+@app.get("/")
+async def serve_root():
+    index_file = DIST_DIR / "index.html"
+    if index_file.exists():
+        return FileResponse(index_file)
+    return JSONResponse({"status": "ok", "service": "SmartBiz AI", "message": "UI build not found in dist. Run npm run build."})
+
+@app.get("/{full_path:path}")
+async def serve_spa_fallback(full_path: str):
+    # Don't intercept API or docs routes
+    if full_path.startswith("api/") or full_path.startswith("health"):
+        return JSONResponse({"detail": "Not Found"}, status_code=404)
+    file_path = DIST_DIR / full_path
+    if file_path.is_file() and file_path.exists():
+        return FileResponse(file_path)
+    index_file = DIST_DIR / "index.html"
+    if index_file.exists():
+        return FileResponse(index_file)
+    return JSONResponse({"detail": "Not Found"}, status_code=404)
 
 # ─── Entry Point ──────────────────────────────────────────────────────────────
 

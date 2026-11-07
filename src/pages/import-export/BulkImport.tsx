@@ -154,7 +154,7 @@ export const BulkImport: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <FileSpreadsheet className="text-blue-400" />
+            <FileSpreadsheet className="text-orange-500" />
             Bulk Product Import & Export
           </h1>
           <p className="text-xs text-slate-400 mt-1">
@@ -192,7 +192,7 @@ export const BulkImport: React.FC = () => {
         <div className="space-y-6">
           {/* File Upload Box */}
           {!previewData && !importResult && (
-            <div className="card border-dashed border-2 border-slate-700 hover:border-blue-500/60 p-12 text-center transition flex flex-col items-center justify-center">
+            <div className="card border-dashed border-2 border-slate-700 hover:border-orange-500/60 p-12 text-center transition flex flex-col items-center justify-center">
               <input
                 ref={fileInputRef}
                 type="file"
@@ -200,7 +200,7 @@ export const BulkImport: React.FC = () => {
                 onChange={handleFileChange}
                 className="hidden"
               />
-              <div className="w-16 h-16 rounded-2xl bg-blue-600/10 text-blue-400 flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-orange-500/10 text-orange-400 flex items-center justify-center mb-4">
                 <Upload size={32} />
               </div>
               <h3 className="text-base font-semibold text-white mb-1">
@@ -244,7 +244,7 @@ export const BulkImport: React.FC = () => {
                   <div>
                     <h2 className="font-bold text-white text-base">Step 1: Map Spreadsheet Columns</h2>
                     <p className="text-xs text-slate-400 mt-0.5">
-                      File: <span className="text-blue-400 font-semibold">{previewData.filename}</span> (
+                      File: <span className="text-orange-400 font-semibold">{previewData.filename}</span> (
                       {previewData.total_rows} data rows detected)
                     </p>
                   </div>
@@ -398,7 +398,7 @@ export const BulkImport: React.FC = () => {
                   <div className="text-[10px] text-slate-400 uppercase font-semibold">New Added</div>
                 </div>
                 <div className="bg-slate-800/80 p-3 rounded-lg border border-slate-700 text-center">
-                  <div className="text-xl font-bold text-blue-400">{importResult.updated}</div>
+                  <div className="text-xl font-bold text-orange-400">{importResult.updated}</div>
                   <div className="text-[10px] text-slate-400 uppercase font-semibold">Updated</div>
                 </div>
                 <div className="bg-slate-800/80 p-3 rounded-lg border border-slate-700 text-center">
@@ -458,7 +458,7 @@ export const BulkImport: React.FC = () => {
           ].map((t) => (
             <div key={t.id} className="card flex flex-col justify-between">
               <div>
-                <div className="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center mb-3">
+                <div className="w-10 h-10 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center mb-3">
                   <FileSpreadsheet size={22} />
                 </div>
                 <h3 className="font-bold text-white text-sm">{t.title}</h3>
@@ -489,7 +489,7 @@ export const BulkImport: React.FC = () => {
       {/* TAB 3: EXPORT INVENTORY */}
       {activeTab === 'export' && (
         <div className="card max-w-xl mx-auto text-center p-10">
-          <div className="w-16 h-16 rounded-2xl bg-blue-600/10 text-blue-400 flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 rounded-2xl bg-orange-500/10 text-orange-400 flex items-center justify-center mx-auto mb-4">
             <FileDown size={32} />
           </div>
           <h2 className="text-lg font-bold text-white mb-2">Export Current Product Master</h2>

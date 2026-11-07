@@ -101,7 +101,7 @@ export const SettingsPage: React.FC = () => {
     <div className="space-y-6 max-w-4xl">
       <div>
         <h1 className="text-xl font-bold text-white flex items-center gap-2">
-          <Settings className="text-blue-400" />
+          <Settings className="text-orange-500" />
           System Settings & Database Backups
         </h1>
         <p className="text-xs text-slate-400 mt-1">
@@ -113,7 +113,7 @@ export const SettingsPage: React.FC = () => {
       <div className="card">
         <div className="card-header">
           <div className="flex items-center gap-2">
-            <Building size={18} className="text-blue-400" />
+            <Building size={18} className="text-orange-400" />
             <h2 className="text-sm font-bold text-white">Business Invoice Header & Contact</h2>
           </div>
           {saveSuccess && (

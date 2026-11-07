@@ -148,11 +148,11 @@ export const ProductList: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <Package className="text-blue-400" />
+            <Package className="text-orange-500" />
             Products & Inventory Master
           </h1>
           <p className="text-xs text-slate-400 mt-1">
-            Total of <span className="text-blue-400 font-semibold">{total}</span> items registered in business
+            Total of <span className="text-orange-400 font-semibold">{total}</span> items registered in business
             catalogue.
           </p>
         </div>
@@ -271,7 +271,7 @@ export const ProductList: React.FC = () => {
                     <td className="text-center">
                       <span
                         className={`badge ${
-                          p.status === 'active' ? 'badge-blue' : 'badge-gray'
+                          p.status === 'active' ? 'badge-orange' : 'badge-gray'
                         }`}
                       >
                         {p.status}
@@ -281,7 +281,7 @@ export const ProductList: React.FC = () => {
                       <div className="flex items-center justify-end gap-1">
                         <button
                           onClick={() => openEditModal(p)}
-                          className="p-1 text-slate-400 hover:text-blue-400 rounded"
+                          className="p-1 text-slate-400 hover:text-orange-400 rounded"
                           title="Edit Product"
                         >
                           <Edit2 size={15} />

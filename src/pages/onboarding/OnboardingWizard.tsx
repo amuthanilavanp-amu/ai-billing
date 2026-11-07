@@ -40,6 +40,7 @@ import {
 import apiClient from '../../api/client';
 import { useBusiness } from '../../context/BusinessContext';
 import { BusinessCategory, CatalogueCategory, CatalogueItem } from '../../types';
+import Logo from '../../components/common/Logo';
 
 const CATEGORY_ICONS: Record<string, React.ElementType> = {
   hotel_restaurant: Utensils,
@@ -218,22 +219,20 @@ export const OnboardingWizard: React.FC = () => {
       <div className="w-full max-w-5xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col">
         {/* Wizard Header */}
         <div className="bg-slate-900/90 border-b border-slate-800 p-6 flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-bold text-white flex items-center gap-2">
-              <span className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-sm font-black">
-                SB
-              </span>
-              SmartBiz AI Setup Wizard
-            </h1>
-            <p className="text-xs text-slate-400 mt-1">
-              Configure your business catalogue, tax profile, and starting product inventory.
-            </p>
+          <div className="flex items-center gap-4">
+            <Logo variant="compact" size="md" />
+            <div>
+              <h1 className="text-xl font-bold text-white">SmartBiz AI Setup Wizard</h1>
+              <p className="text-xs text-slate-400 mt-1">
+                Configure your business catalogue, tax profile, and starting product inventory.
+              </p>
+            </div>
           </div>
 
           <div className="flex items-center gap-2 text-xs font-semibold">
             <span
               className={`px-3 py-1 rounded-full ${
-                step >= 1 ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-400'
+                step >= 1 ? 'bg-orange-500 text-white' : 'bg-slate-800 text-slate-400'
               }`}
             >
               1. Category
@@ -241,7 +240,7 @@ export const OnboardingWizard: React.FC = () => {
             <span className="text-slate-600">→</span>
             <span
               className={`px-3 py-1 rounded-full ${
-                step >= 2 ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-400'
+                step >= 2 ? 'bg-orange-500 text-white' : 'bg-slate-800 text-slate-400'
               }`}
             >
               2. Details
@@ -249,7 +248,7 @@ export const OnboardingWizard: React.FC = () => {
             <span className="text-slate-600">→</span>
             <span
               className={`px-3 py-1 rounded-full ${
-                step >= 3 ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-400'
+                step >= 3 ? 'bg-orange-500 text-white' : 'bg-slate-800 text-slate-400'
               }`}
             >
               3. Products
@@ -279,11 +278,11 @@ export const OnboardingWizard: React.FC = () => {
                       onClick={() => setSelectedCategory(cat.value)}
                       className={`flex flex-col items-center justify-center p-4 rounded-xl border text-center transition-all ${
                         isSelected
-                          ? 'bg-blue-600/20 border-blue-500 text-white shadow-lg shadow-blue-500/10'
+                          ? 'bg-orange-500/20 border-orange-500 text-white shadow-lg shadow-orange-500/10'
                           : 'bg-slate-800/40 border-slate-700/60 text-slate-300 hover:bg-slate-800 hover:border-slate-600'
                       }`}
                     >
-                      <Icon size={24} className={isSelected ? 'text-blue-400' : 'text-slate-400'} />
+                      <Icon size={24} className={isSelected ? 'text-orange-400' : 'text-slate-400'} />
                       <span className="mt-2 text-xs font-semibold leading-snug">{cat.label}</span>
                     </button>
                   );
@@ -414,12 +413,12 @@ export const OnboardingWizard: React.FC = () => {
                   onClick={() => setOnboardingChoice('catalogue')}
                   className={`p-5 rounded-xl border text-left flex flex-col justify-between transition-all ${
                     onboardingChoice === 'catalogue'
-                      ? 'bg-blue-600/15 border-blue-500 shadow-md'
+                      ? 'bg-orange-500/15 border-orange-500 shadow-md'
                       : 'bg-slate-800/40 border-slate-700/60 hover:bg-slate-800'
                   }`}
                 >
                   <div>
-                    <div className="w-10 h-10 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center mb-3">
+                    <div className="w-10 h-10 rounded-lg bg-orange-500/20 text-orange-400 flex items-center justify-center mb-3">
                       <CheckCircle2 size={22} />
                     </div>
                     <h3 className="font-bold text-white text-sm">Browse & Select Starter Items</h3>
@@ -427,14 +426,14 @@ export const OnboardingWizard: React.FC = () => {
                       Choose from our rich category-tailored starter catalogue with 1-click checkboxes.
                     </p>
                   </div>
-                  <span className="badge badge-blue mt-4 self-start">Recommended</span>
+                  <span className="badge badge-orange mt-4 self-start">Recommended</span>
                 </button>
 
                 <button
                   onClick={() => setOnboardingChoice('import')}
                   className={`p-5 rounded-xl border text-left flex flex-col justify-between transition-all ${
                     onboardingChoice === 'import'
-                      ? 'bg-blue-600/15 border-blue-500 shadow-md'
+                      ? 'bg-orange-500/15 border-orange-500 shadow-md'
                       : 'bg-slate-800/40 border-slate-700/60 hover:bg-slate-800'
                   }`}
                 >
@@ -454,7 +453,7 @@ export const OnboardingWizard: React.FC = () => {
                   onClick={() => setOnboardingChoice('blank')}
                   className={`p-5 rounded-xl border text-left flex flex-col justify-between transition-all ${
                     onboardingChoice === 'blank'
-                      ? 'bg-blue-600/15 border-blue-500 shadow-md'
+                      ? 'bg-orange-500/15 border-orange-500 shadow-md'
                       : 'bg-slate-800/40 border-slate-700/60 hover:bg-slate-800'
                   }`}
                 >
@@ -485,7 +484,7 @@ export const OnboardingWizard: React.FC = () => {
                       />
                     </div>
                     <div className="text-xs text-slate-300 font-medium">
-                      Selected: <span className="text-blue-400 font-bold">{selectedItemIds.size}</span> items
+                      Selected: <span className="text-orange-400 font-bold">{selectedItemIds.size}</span> items
                     </div>
                   </div>
 
@@ -495,7 +494,7 @@ export const OnboardingWizard: React.FC = () => {
                       onClick={() => setActiveCatFilter(null)}
                       className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition ${
                         activeCatFilter === null
-                          ? 'bg-blue-600 text-white'
+                          ? 'bg-orange-500 text-white'
                           : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
                       }`}
                     >
@@ -507,7 +506,7 @@ export const OnboardingWizard: React.FC = () => {
                         onClick={() => setActiveCatFilter(cat.id)}
                         className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition ${
                           activeCatFilter === cat.id
-                            ? 'bg-blue-600 text-white'
+                            ? 'bg-orange-500 text-white'
                             : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
                         }`}
                       >
@@ -526,7 +525,7 @@ export const OnboardingWizard: React.FC = () => {
                           onClick={() => toggleItem(item.id)}
                           className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer select-none transition ${
                             isSelected
-                              ? 'bg-blue-600/10 border-blue-500/50 text-white'
+                              ? 'bg-orange-500/10 border-orange-500/50 text-white'
                               : 'bg-slate-800/30 border-slate-700/40 text-slate-400 hover:bg-slate-800/60'
                           }`}
                         >
@@ -535,7 +534,7 @@ export const OnboardingWizard: React.FC = () => {
                               type="checkbox"
                               checked={isSelected}
                               onChange={() => {}} // handled by parent div click
-                              className="rounded border-slate-700 text-blue-600 focus:ring-0"
+                              className="rounded border-slate-700 text-orange-500 focus:ring-0"
                             />
                             <div className="truncate">
                               <div className="text-xs font-medium text-slate-200 truncate">{item.name}</div>

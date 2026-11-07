@@ -217,7 +217,28 @@ def create_invoice(
         db.add(payment)
 
     db.commit()
-    return {"id": invoice.id, "invoice_number": invoice_number, "grand_total": calc["grand_total"]}
+    return {
+        "id": invoice.id,
+        "invoice_number": invoice_number,
+        "invoice_date": invoice_date.isoformat(),
+        "customer_name": invoice.customer_name or "Walk-in Customer",
+        "customer_phone": invoice.customer_phone,
+        "customer_gstin": invoice.customer_gstin,
+        "subtotal": calc["subtotal"],
+        "discount_amount": calc["discount_amount"],
+        "discount_percent": data.discount_percent,
+        "taxable_amount": calc["taxable_amount"],
+        "cgst_amount": calc["cgst_amount"],
+        "sgst_amount": calc["sgst_amount"],
+        "igst_amount": calc["igst_amount"],
+        "total_tax": calc["total_tax"],
+        "grand_total": calc["grand_total"],
+        "paid_amount": invoice.paid_amount,
+        "balance_due": invoice.balance_due,
+        "round_off": data.round_off,
+        "payment_method": invoice.payment_method.value,
+        "items": calc["line_items"],
+    }
 
 
 @router.get("")

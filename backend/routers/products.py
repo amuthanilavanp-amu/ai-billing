@@ -211,14 +211,45 @@ def find_by_barcode(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """Find a product by barcode scan — used by billing."""
+    """Find a product by barcode scan — used by billing with multi-format matching."""
     if not current_user.company_id:
         return None
+    cleaned = barcode.strip()
+    if not cleaned:
+        raise HTTPException(status_code=400, detail="Barcode cannot be empty")
+
+    candidates = [cleaned]
+    if len(cleaned) == 13 and cleaned.startswith("0"):
+        candidates.append(cleaned[1:])
+    elif len(cleaned) == 12:
+        candidates.append("0" + cleaned)
+
+    lower_candidates = [c.lower() for c in candidates]
+
+    # Primary search: exact or normalized barcode or SKU
     product = db.query(BusinessProduct).filter(
         BusinessProduct.company_id == current_user.company_id,
-        BusinessProduct.barcode == barcode,
-        BusinessProduct.status == ProductStatus.ACTIVE,
+        BusinessProduct.status != ProductStatus.DISCONTINUED,
+        or_(
+            BusinessProduct.barcode.in_(candidates),
+            BusinessProduct.sku.in_(candidates),
+            func.lower(BusinessProduct.barcode).in_(lower_candidates),
+            func.lower(BusinessProduct.sku).in_(lower_candidates),
+        ),
     ).first()
+
+    # Fallback search: partial match or matching product name
+    if not product:
+        product = db.query(BusinessProduct).filter(
+            BusinessProduct.company_id == current_user.company_id,
+            BusinessProduct.status != ProductStatus.DISCONTINUED,
+            or_(
+                BusinessProduct.barcode.ilike(f"%{cleaned}%"),
+                BusinessProduct.sku.ilike(f"%{cleaned}%"),
+                BusinessProduct.name.ilike(f"{cleaned}%"),
+            ),
+        ).first()
+
     if not product:
         raise HTTPException(status_code=404, detail=f"No product found for barcode: {barcode}")
     return _product_to_dict(product)

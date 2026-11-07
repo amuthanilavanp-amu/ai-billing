@@ -55,7 +55,7 @@ export const ForecastingPage: React.FC = () => {
       {/* Header */}
       <div>
         <h1 className="text-xl font-bold text-white flex items-center gap-2">
-          <TrendingUp className="text-blue-400" />
+          <TrendingUp className="text-orange-500" />
           AI Replenishment & Demand Forecasting
         </h1>
         <p className="text-xs text-slate-400 mt-1">
@@ -79,7 +79,7 @@ export const ForecastingPage: React.FC = () => {
 
         <div className="stat-card">
           <span className="stat-label">Products Analyzed</span>
-          <span className="stat-value text-blue-400">{recommendations.length}</span>
+          <span className="stat-value text-orange-400">{recommendations.length}</span>
           <span className="stat-change">Active inventory items tracked</span>
         </div>
 
@@ -158,7 +158,7 @@ export const ForecastingPage: React.FC = () => {
                       )}
                     </td>
                     <td className="text-center">
-                      <span className="font-bold text-blue-400 text-xs">
+                      <span className="font-bold text-orange-400 text-xs">
                         +{r.suggested_order_qty} {r.unit}
                       </span>
                     </td>
@@ -216,7 +216,7 @@ export const ForecastingPage: React.FC = () => {
                     <span className="text-[10px] text-slate-500 uppercase font-bold">
                       Expected 30-Day Demand
                     </span>
-                    <div className="text-lg font-bold text-blue-400 mt-1">
+                    <div className="text-lg font-bold text-orange-400 mt-1">
                       {selectedProductForecast.horizon_forecast} {selectedProductForecast.unit}
                     </div>
                   </div>
@@ -252,7 +252,7 @@ export const ForecastingPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="p-3 bg-blue-950/20 border border-blue-500/30 rounded-lg text-xs text-blue-300 flex items-start gap-2">
+                <div className="p-3 bg-orange-950/20 border border-orange-500/30 rounded-lg text-xs text-orange-300 flex items-start gap-2">
                   <Info size={16} className="flex-shrink-0 mt-0.5" />
                   <span>{selectedProductForecast.disclaimer}</span>
                 </div>

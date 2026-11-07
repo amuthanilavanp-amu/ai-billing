@@ -56,7 +56,7 @@ export const SupplierList: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <Truck className="text-blue-400" />
+            <Truck className="text-orange-500" />
             Vendor & Supplier Directory
           </h1>
           <p className="text-xs text-slate-400 mt-1">

@@ -118,12 +118,12 @@ export const CatalogueBrowser: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <BookOpen className="text-blue-400" />
+            <BookOpen className="text-orange-500" />
             Starter Catalogue Explorer
           </h1>
           <p className="text-xs text-slate-400 mt-1">
             Industry starter template for{' '}
-            <span className="text-blue-400 font-semibold capitalize">
+            <span className="text-orange-400 font-semibold capitalize">
               {businessCategory.replace(/_/g, ' ')}
             </span>
             . Select items to add them directly to your business inventory.
@@ -131,8 +131,8 @@ export const CatalogueBrowser: React.FC = () => {
         </div>
 
         {selectedIds.size > 0 && (
-          <div className="flex items-center gap-3 bg-blue-900/30 border border-blue-500/40 p-2 px-4 rounded-xl">
-            <span className="text-xs font-semibold text-blue-200">
+          <div className="flex items-center gap-3 bg-orange-950/40 border border-orange-500/40 p-2 px-4 rounded-xl">
+            <span className="text-xs font-semibold text-orange-200">
               Selected: <strong className="text-white">{selectedIds.size}</strong> items
             </span>
             <div className="flex items-center gap-2">
@@ -198,7 +198,7 @@ export const CatalogueBrowser: React.FC = () => {
         <div className="flex items-center gap-2">
           <button onClick={selectAllCurrentPage} className="btn btn-secondary btn-sm flex items-center gap-1.5">
             {items.length > 0 && items.every((i) => selectedIds.has(i.id)) ? (
-              <CheckSquare size={14} className="text-blue-400" />
+              <CheckSquare size={14} className="text-orange-400" />
             ) : (
               <Square size={14} />
             )}
@@ -213,7 +213,7 @@ export const CatalogueBrowser: React.FC = () => {
           onClick={() => setSelectedCatId(null)}
           className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition ${
             selectedCatId === null
-              ? 'bg-blue-600 text-white'
+              ? 'bg-orange-500 text-white'
               : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
           }`}
         >
@@ -225,7 +225,7 @@ export const CatalogueBrowser: React.FC = () => {
             onClick={() => setSelectedCatId(cat.id)}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition ${
               selectedCatId === cat.id
-                ? 'bg-blue-600 text-white'
+                ? 'bg-orange-500 text-white'
                 : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
             }`}
           >
@@ -269,7 +269,7 @@ export const CatalogueBrowser: React.FC = () => {
                 return (
                   <tr
                     key={item.id}
-                    className={`cursor-pointer ${isSelected ? 'bg-blue-900/10' : ''}`}
+                    className={`cursor-pointer ${isSelected ? 'bg-orange-500/10' : ''}`}
                     onClick={() => toggleSelect(item.id)}
                   >
                     <td onClick={(e) => e.stopPropagation()}>
@@ -299,7 +299,7 @@ export const CatalogueBrowser: React.FC = () => {
                           {item.is_vegetarian ? 'VEG' : 'NON-VEG'}
                         </span>
                       )}
-                      {item.is_service && <span className="badge badge-blue ml-1">Service</span>}
+                      {item.is_service && <span className="badge badge-orange ml-1">Service</span>}
                     </td>
                     <td className="text-right" onClick={(e) => e.stopPropagation()}>
                       <button

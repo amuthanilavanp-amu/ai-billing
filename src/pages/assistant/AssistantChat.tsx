@@ -77,13 +77,13 @@ export const AssistantChat: React.FC = () => {
       {/* Top Banner */}
       <div className="p-4 border-b border-slate-800 bg-slate-900/90 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-blue-600/20 text-blue-400 border border-blue-500/40 flex items-center justify-center">
+          <div className="w-9 h-9 rounded-xl bg-orange-500/20 text-orange-400 border border-orange-500/40 flex items-center justify-center">
             <Bot size={20} />
           </div>
           <div>
             <h1 className="text-sm font-bold text-white flex items-center gap-2">
               SmartBiz AI Assistant
-              <span className="badge badge-blue text-[10px]">Restricted Local Agent</span>
+              <span className="badge badge-orange text-[10px]">Restricted Local Agent</span>
             </h1>
             <p className="text-[11px] text-slate-400">
               Answers strictly from your local SQLite database. No external cloud dependencies.
@@ -104,21 +104,21 @@ export const AssistantChat: React.FC = () => {
           return (
             <div key={idx} className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}>
               {!isUser && (
-                <div className="w-8 h-8 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div className="w-8 h-8 rounded-lg bg-orange-500/20 text-orange-400 flex items-center justify-center flex-shrink-0 mt-0.5">
                   <Bot size={16} />
                 </div>
               )}
               <div
                 className={`max-w-xl p-3.5 rounded-xl text-xs leading-relaxed ${
                   isUser
-                    ? 'bg-blue-600 text-white rounded-br-none'
+                    ? 'bg-orange-500 text-white font-medium rounded-br-none'
                     : 'bg-slate-800/80 border border-slate-700/60 text-slate-200 rounded-bl-none whitespace-pre-wrap'
                 }`}
               >
                 <div>{m.text}</div>
                 <div
                   className={`text-[9px] mt-1 text-right ${
-                    isUser ? 'text-blue-200' : 'text-slate-500'
+                    isUser ? 'text-orange-200' : 'text-slate-500'
                   }`}
                 >
                   {m.time}
@@ -134,7 +134,7 @@ export const AssistantChat: React.FC = () => {
         })}
         {isLoading && (
           <div className="flex gap-3">
-            <div className="w-8 h-8 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-orange-500/20 text-orange-400 flex items-center justify-center">
               <Bot size={16} />
             </div>
             <div className="bg-slate-800 p-3 rounded-xl flex items-center gap-2 text-xs text-slate-400">

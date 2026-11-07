@@ -52,7 +52,7 @@ export const CustomerList: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <Users className="text-blue-400" />
+            <Users className="text-orange-500" />
             Customer Profiles & Ledgers
           </h1>
           <p className="text-xs text-slate-400 mt-1">

@@ -37,7 +37,7 @@ export const ReportsPage: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <FileBarChart className="text-blue-400" />
+            <FileBarChart className="text-orange-500" />
             Tax Compliance & Business Reports
           </h1>
           <p className="text-xs text-slate-400 mt-1">
@@ -56,7 +56,7 @@ export const ReportsPage: React.FC = () => {
       {/* Date Range Selector */}
       <div className="card flex flex-wrap items-center justify-between gap-4 py-3">
         <div className="flex items-center gap-3">
-          <Calendar size={18} className="text-blue-400" />
+          <Calendar size={18} className="text-orange-400" />
           <span className="text-xs font-semibold text-slate-300">Reporting Period:</span>
           <input
             type="date"
@@ -152,7 +152,7 @@ export const ReportsPage: React.FC = () => {
               </tbody>
             </table>
 
-            <div className="mt-4 p-3 rounded-lg bg-blue-950/20 border border-blue-500/30 text-xs text-blue-300 flex items-start gap-2">
+            <div className="mt-4 p-3 rounded-lg bg-orange-950/20 border border-orange-500/30 text-xs text-orange-300 flex items-start gap-2">
               <Info size={16} className="flex-shrink-0 mt-0.5" />
               <span>
                 <strong>Statutory Notice:</strong> {gstData.note} SmartBiz AI computes taxes strictly from the

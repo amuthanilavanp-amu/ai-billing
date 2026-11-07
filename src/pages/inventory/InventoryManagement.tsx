@@ -118,7 +118,7 @@ export const InventoryManagement: React.FC = () => {
       {/* Top Header */}
       <div>
         <h1 className="text-xl font-bold text-white flex items-center gap-2">
-          <Boxes className="text-blue-400" />
+          <Boxes className="text-orange-500" />
           Inventory Control & Stock Ledger
         </h1>
         <p className="text-xs text-slate-400 mt-1">
@@ -138,7 +138,7 @@ export const InventoryManagement: React.FC = () => {
 
         <div className="stat-card">
           <span className="stat-label">Tracked Items</span>
-          <span className="stat-value text-blue-400">{summary?.total_products || 0}</span>
+          <span className="stat-value text-orange-400">{summary?.total_products || 0}</span>
           <span className="stat-change">Products with stock tracking enabled</span>
         </div>
 
