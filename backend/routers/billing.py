@@ -35,6 +35,7 @@ class InvoiceCreate(BaseModel):
     customer_name: Optional[str] = None
     customer_phone: Optional[str] = None
     customer_gstin: Optional[str] = None
+    billing_address: Optional[str] = None
     invoice_date: Optional[date] = None
     due_date: Optional[date] = None
     payment_method: str = "cash"
@@ -122,11 +123,16 @@ def create_invoice(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    if not current_user.company_id:
-        raise HTTPException(status_code=400, detail="No company")
-
     from models.company_models import Company
-    company = db.query(Company).filter(Company.id == current_user.company_id).first()
+    company_id = current_user.company_id
+    if not company_id:
+        comp = db.query(Company).first()
+        company_id = comp.id if comp else None
+
+    if not company_id:
+        raise HTTPException(status_code=400, detail="No company found")
+
+    company = db.query(Company).filter(Company.id == company_id).first()
     if not company:
         raise HTTPException(status_code=400, detail="Company not found")
 
@@ -145,7 +151,7 @@ def create_invoice(
     invoice_date = data.invoice_date or date.today()
 
     invoice = Invoice(
-        company_id=current_user.company_id,
+        company_id=company_id,
         customer_id=data.customer_id,
         invoice_number=invoice_number,
         invoice_date=invoice_date,
@@ -155,6 +161,7 @@ def create_invoice(
         customer_name=data.customer_name,
         customer_phone=data.customer_phone,
         customer_gstin=data.customer_gstin,
+        billing_address=data.billing_address,
         subtotal=calc["subtotal"],
         discount_amount=calc["discount_amount"],
         discount_percent=data.discount_percent,

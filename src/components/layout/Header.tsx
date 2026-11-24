@@ -51,7 +51,11 @@ export const Header: React.FC<{ title?: string }> = ({ title }) => {
         </div>
 
         <button
-          onClick={logout}
+          onClick={() => {
+            if (window.confirm('Are you sure you want to sign out from SmartBiz AI?')) {
+              logout();
+            }
+          }}
           className="p-2 hover:bg-red-500/10 rounded-lg text-zinc-400 hover:text-red-400 transition"
           title="Sign Out"
         >

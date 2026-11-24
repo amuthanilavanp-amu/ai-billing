@@ -7,6 +7,7 @@ from sqlalchemy import func, or_
 
 from database import get_db
 from models.customer_models import Customer
+from models.company_models import Company
 from routers.auth import get_current_user
 from models.user_models import User
 
@@ -33,32 +34,69 @@ def list_customers(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    if not current_user.company_id:
+    company_id = current_user.company_id
+    if not company_id:
+        comp = db.query(Company).first()
+        company_id = comp.id if comp else None
+
+    if not company_id:
         return {"total": 0, "items": []}
+
     q = db.query(Customer).filter(
-        Customer.company_id == current_user.company_id,
+        Customer.company_id == company_id,
         Customer.is_active == True,
     )
     if search:
         term = f"%{search}%"
-        q = q.filter(or_(Customer.name.ilike(term), Customer.phone.ilike(term)))
+        q = q.filter(or_(Customer.name.ilike(term), Customer.phone.ilike(term), Customer.gstin.ilike(term)))
     total = q.count()
     items = q.order_by(Customer.name).offset((page-1)*page_size).limit(page_size).all()
     return {
         "total": total,
-        "items": [{"id": c.id, "name": c.name, "phone": c.phone, "email": c.email, "gstin": c.gstin, "outstanding_balance": c.outstanding_balance} for c in items],
+        "items": [
+            {
+                "id": c.id,
+                "name": c.name,
+                "phone": c.phone,
+                "email": c.email,
+                "address": c.address,
+                "city": c.city,
+                "state": c.state,
+                "gstin": c.gstin,
+                "credit_limit": c.credit_limit,
+                "outstanding_balance": c.outstanding_balance,
+            }
+            for c in items
+        ],
     }
 
 
 @router.post("")
 def create_customer(data: CustomerCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    if not current_user.company_id:
-        raise HTTPException(status_code=400, detail="No company")
-    customer = Customer(company_id=current_user.company_id, **data.model_dump())
+    company_id = current_user.company_id
+    if not company_id:
+        comp = db.query(Company).first()
+        company_id = comp.id if comp else None
+
+    if not company_id:
+        raise HTTPException(status_code=400, detail="No company registered")
+
+    customer = Customer(company_id=company_id, **data.model_dump())
     db.add(customer)
     db.commit()
     db.refresh(customer)
-    return {"id": customer.id, "name": customer.name}
+    return {
+        "id": customer.id,
+        "name": customer.name,
+        "phone": customer.phone,
+        "email": customer.email,
+        "address": customer.address,
+        "city": customer.city,
+        "state": customer.state,
+        "gstin": customer.gstin,
+        "credit_limit": customer.credit_limit,
+        "outstanding_balance": customer.outstanding_balance,
+    }
 
 
 @router.get("/{customer_id}")

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Lock, User, KeyRound, ShieldCheck, ArrowRight, UserPlus, LogIn, Eye, EyeOff, CheckCircle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { Logo } from '../../components/common/Logo';
+import apiClient from '../../api/client';
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -59,10 +60,10 @@ export const LoginPage: React.FC = () => {
           full_name: fullName.trim() || cleanUsername,
           email: `${cleanUsername}@smartbiz.local`,
         });
-        setSuccessMsg(`Account '${cleanUsername}' created successfully! Signing you in...`);
+        setSuccessMsg(`Account '${cleanUsername}' created successfully! Opening business category setup...`);
         setTimeout(() => {
-          navigate(needsSetup ? '/onboarding' : '/dashboard');
-        }, 600);
+          navigate('/onboarding');
+        }, 500);
       } catch (err: any) {
         setErrorMsg(err.response?.data?.detail || 'Failed to create user account. Please try another username.');
       } finally {
@@ -72,7 +73,17 @@ export const LoginPage: React.FC = () => {
       // Login mode
       try {
         await login(cleanUsername, password);
-        navigate(needsSetup ? '/onboarding' : '/dashboard');
+        // Verify if company onboarding is needed
+        try {
+          const res = await apiClient.get('/companies/current');
+          if (!res.data || !res.data.is_onboarding_complete) {
+            navigate('/onboarding');
+          } else {
+            navigate('/dashboard');
+          }
+        } catch {
+          navigate('/onboarding');
+        }
       } catch (err: any) {
         setErrorMsg(err.response?.data?.detail || 'Incorrect username or password. You can create a new username & password below.');
       } finally {

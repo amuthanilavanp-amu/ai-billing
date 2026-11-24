@@ -46,12 +46,29 @@ def create_company(data: CompanyCreate, db: Session = Depends(get_db), current_u
     except ValueError:
         raise HTTPException(status_code=400, detail=f"Invalid business category: {data.business_category}")
 
+    # Check if company already exists
+    company = None
+    if current_user.company_id:
+        company = db.query(Company).filter(Company.id == current_user.company_id).first()
+    if not company:
+        company = db.query(Company).first()
+
+    if company:
+        for field, value in data.model_dump(exclude_none=True).items():
+            if field == "business_category":
+                company.business_category = biz_cat
+            else:
+                setattr(company, field, value)
+        current_user.company_id = company.id
+        db.commit()
+        db.refresh(company)
+        return {"id": company.id, "name": company.name, "business_category": company.business_category.value}
+
     company = Company(**data.model_dump(exclude_none=False))
     company.business_category = biz_cat
     db.add(company)
     db.flush()
 
-    # Associate user with company
     current_user.company_id = company.id
     db.commit()
     db.refresh(company)
@@ -60,9 +77,16 @@ def create_company(data: CompanyCreate, db: Session = Depends(get_db), current_u
 
 @router.get("/current")
 def get_current_company(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    if not current_user.company_id:
+    company_id = current_user.company_id
+    if not company_id:
+        comp = db.query(Company).first()
+        if comp:
+            current_user.company_id = comp.id
+            db.commit()
+            company_id = comp.id
+    if not company_id:
         return None
-    company = db.query(Company).filter(Company.id == current_user.company_id).first()
+    company = db.query(Company).filter(Company.id == company_id).first()
     if not company:
         return None
     return {

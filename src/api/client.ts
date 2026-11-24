@@ -18,7 +18,11 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    // Only force logout if the failing request is explicitly the authentication verification endpoint
+    const requestUrl = error.config?.url || '';
+    const isAuthEndpoint = requestUrl.includes('/auth/me');
+    
+    if (error.response?.status === 401 && isAuthEndpoint) {
       localStorage.removeItem('smartbiz_token');
       localStorage.removeItem('smartbiz_user');
       if (!window.location.hash.includes('/login')) {

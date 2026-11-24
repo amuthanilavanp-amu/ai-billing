@@ -18,6 +18,12 @@ import {
   ShoppingBag,
   AlertCircle,
   Percent,
+  UserPlus,
+  Building,
+  Phone,
+  MapPin,
+  RotateCcw,
+  Check,
 } from 'lucide-react';
 import apiClient from '../../api/client';
 import { useBusiness } from '../../context/BusinessContext';
@@ -66,8 +72,27 @@ export const BillingPOS: React.FC = () => {
   const [scanNotice, setScanNotice] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
   // Customer info & tender
+  const [selectedCustomerId, setSelectedCustomerId] = useState<number | null>(null);
   const [customerName, setCustomerName] = useState('Walk-in Customer');
   const [customerPhone, setCustomerPhone] = useState('');
+  const [customerGstin, setCustomerGstin] = useState('');
+  const [customerAddress, setCustomerAddress] = useState('');
+  const [customerSearchResults, setCustomerSearchResults] = useState<any[]>([]);
+  const [isSearchingCustomer, setIsSearchingCustomer] = useState(false);
+  const [showCustomerDropdown, setShowCustomerDropdown] = useState(false);
+
+  // Add Customer modal state
+  const [isAddCustomerModalOpen, setIsAddCustomerModalOpen] = useState(false);
+  const [newCustomerForm, setNewCustomerForm] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    gstin: '',
+    address: '',
+    city: '',
+    credit_limit: '0',
+  });
+  const [isSavingCustomer, setIsSavingCustomer] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'upi' | 'card' | 'credit'>('cash');
   const [tenderedAmount, setTenderedAmount] = useState<string>('');
   const [isIgst, setIsIgst] = useState(false);
@@ -365,6 +390,82 @@ export const BillingPOS: React.FC = () => {
 
   const totals = calculateTotals();
 
+  // Customer live search
+  const handleCustomerSearch = async (val: string) => {
+    setCustomerName(val);
+    setSelectedCustomerId(null);
+    if (!val || val.trim().length < 2) {
+      setCustomerSearchResults([]);
+      setShowCustomerDropdown(false);
+      return;
+    }
+    setIsSearchingCustomer(true);
+    try {
+      const res = await apiClient.get('/customers', { params: { search: val.trim(), page_size: 8 } });
+      setCustomerSearchResults(res.data.items || []);
+      setShowCustomerDropdown((res.data.items || []).length > 0);
+    } catch {
+      setCustomerSearchResults([]);
+    } finally {
+      setIsSearchingCustomer(false);
+    }
+  };
+
+  const handleSelectCustomer = (c: any) => {
+    setSelectedCustomerId(c.id);
+    setCustomerName(c.name);
+    setCustomerPhone(c.phone || '');
+    setCustomerGstin(c.gstin || '');
+    setCustomerAddress(c.address || '');
+    setShowCustomerDropdown(false);
+    notifyScan(`Customer: ${c.name} attached`, 'success');
+  };
+
+  const handleResetCustomer = () => {
+    setSelectedCustomerId(null);
+    setCustomerName('Walk-in Customer');
+    setCustomerPhone('');
+    setCustomerGstin('');
+    setCustomerAddress('');
+    setShowCustomerDropdown(false);
+  };
+
+  const handleSaveNewCustomer = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCustomerForm.name.trim()) {
+      alert('Please enter customer name');
+      return;
+    }
+    setIsSavingCustomer(true);
+    try {
+      const res = await apiClient.post('/customers', {
+        name: newCustomerForm.name.trim(),
+        phone: newCustomerForm.phone.trim() || undefined,
+        email: newCustomerForm.email.trim() || undefined,
+        gstin: newCustomerForm.gstin.trim() || undefined,
+        address: newCustomerForm.address.trim() || undefined,
+        city: newCustomerForm.city.trim() || undefined,
+        credit_limit: parseFloat(newCustomerForm.credit_limit) || 0,
+      });
+      handleSelectCustomer(res.data);
+      setIsAddCustomerModalOpen(false);
+      setNewCustomerForm({
+        name: '',
+        phone: '',
+        email: '',
+        gstin: '',
+        address: '',
+        city: '',
+        credit_limit: '0',
+      });
+      notifyScan(`Customer ${res.data.name} saved & linked!`, 'success');
+    } catch (err: any) {
+      alert('Failed to save customer: ' + (err.response?.data?.detail || err.message));
+    } finally {
+      setIsSavingCustomer(false);
+    }
+  };
+
   // Process checkout & invoice persistence
   const handleCheckout = async () => {
     if (cart.length === 0) {
@@ -376,8 +477,11 @@ export const BillingPOS: React.FC = () => {
     setIsCheckingOut(true);
     try {
       const payload = {
+        customer_id: selectedCustomerId || undefined,
         customer_name: customerName.trim() || 'Walk-in Customer',
         customer_phone: customerPhone.trim() || undefined,
+        customer_gstin: customerGstin.trim() || undefined,
+        billing_address: customerAddress.trim() || undefined,
         payment_method: paymentMethod,
         discount_percent: parseFloat(overallDiscountPercent) || 0,
         is_igst: isIgst,
@@ -398,8 +502,11 @@ export const BillingPOS: React.FC = () => {
       const res = await apiClient.post('/billing', payload);
       setCreatedInvoice(res.data);
       setCart([]);
+      setSelectedCustomerId(null);
       setCustomerName('Walk-in Customer');
       setCustomerPhone('');
+      setCustomerGstin('');
+      setCustomerAddress('');
       setTenderedAmount('');
       setOverallDiscountPercent('0');
       notifyScan(`Invoice #${res.data.invoice_number} Generated!`, 'success');
@@ -633,38 +740,128 @@ export const BillingPOS: React.FC = () => {
       <div className="w-full md:w-[380px] bg-[#121217] border border-[#272733] rounded-2xl p-5 flex flex-col justify-between shadow-2xl">
         <div>
           {/* Customer & Tax Type Header */}
-          <div className="flex items-center justify-between pb-3.5 border-b border-[#252530] mb-3.5">
-            <h2 className="font-extrabold text-white text-sm flex items-center gap-2">
-              <UserCheck size={17} className="text-orange-500" />
-              <span>Customer & Billing</span>
+          <div className="flex items-center justify-between pb-3 border-b border-[#252530] mb-3">
+            <h2 className="font-extrabold text-white text-sm flex items-center gap-1.5">
+              <UserCheck size={16} className="text-orange-500" />
+              <span>Customer Details</span>
             </h2>
-            <label className="flex items-center gap-1.5 text-xs text-zinc-400 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                checked={isIgst}
-                onChange={(e) => setIsIgst(e.target.checked)}
-              />
-              <span className="font-semibold text-zinc-300">Inter-State (IGST)</span>
-            </label>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setIsAddCustomerModalOpen(true)}
+                className="px-2 py-1 rounded bg-orange-500/15 hover:bg-orange-500/25 text-orange-400 border border-orange-500/30 text-[11px] font-bold flex items-center gap-1 transition"
+                title="Register and attach a new customer"
+              >
+                <UserPlus size={13} />
+                <span>+ Add</span>
+              </button>
+              <label className="flex items-center gap-1 text-[11px] text-zinc-400 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={isIgst}
+                  onChange={(e) => setIsIgst(e.target.checked)}
+                />
+                <span className="font-semibold text-zinc-300">IGST</span>
+              </label>
+            </div>
           </div>
 
-          {/* Customer input fields */}
-          <div className="space-y-2.5 mb-4">
-            <input
-              type="text"
-              placeholder="Customer Name (e.g. Walk-in Customer)"
-              value={customerName}
-              onChange={(e) => setCustomerName(e.target.value)}
-              className="text-xs bg-[#191922] border-[#2d2d3a] font-medium"
-            />
-            <input
-              type="text"
-              placeholder="Mobile Phone (for WhatsApp / SMS bill)"
-              value={customerPhone}
-              onChange={(e) => setCustomerPhone(e.target.value)}
-              className="text-xs bg-[#191922] border-[#2d2d3a] font-medium"
-            />
-          </div>
+          {/* Customer Selection & Details */}
+          {selectedCustomerId ? (
+            <div className="p-3 bg-orange-500/10 border border-orange-500/30 rounded-xl mb-4 relative">
+              <div className="flex items-start justify-between">
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-black text-white">{customerName}</span>
+                    <span className="badge badge-orange text-[9px] px-1.5 py-0.2">Registered</span>
+                  </div>
+                  {customerPhone && (
+                    <div className="text-[11px] text-zinc-300 mt-0.5 flex items-center gap-1 font-mono">
+                      <Phone size={11} className="text-orange-400" />
+                      <span>{customerPhone}</span>
+                    </div>
+                  )}
+                  {customerGstin && (
+                    <div className="text-[10px] text-amber-300 font-mono mt-0.5">
+                      GSTIN: {customerGstin}
+                    </div>
+                  )}
+                  {customerAddress && (
+                    <div className="text-[10px] text-zinc-400 mt-0.5 truncate max-w-[240px]">
+                      {customerAddress}
+                    </div>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={handleResetCustomer}
+                  className="text-[11px] text-zinc-400 hover:text-red-400 font-semibold p-1 hover:bg-zinc-800 rounded transition"
+                  title="Remove customer (switch back to Walk-in)"
+                >
+                  <RotateCcw size={13} />
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-2 mb-4 relative">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Customer Name or Search Registered..."
+                  value={customerName}
+                  onChange={(e) => handleCustomerSearch(e.target.value)}
+                  onFocus={() => {
+                    if (customerSearchResults.length > 0) setShowCustomerDropdown(true);
+                  }}
+                  className="text-xs bg-[#191922] border-[#2d2d3a] font-medium w-full pr-8"
+                />
+                {isSearchingCustomer && (
+                  <div className="absolute right-2.5 top-2.5">
+                    <span className="loading-spinner text-orange-500 w-3.5 h-3.5" />
+                  </div>
+                )}
+                {/* Autocomplete Dropdown */}
+                {showCustomerDropdown && customerSearchResults.length > 0 && (
+                  <div className="absolute left-0 right-0 top-full mt-1 bg-[#16161f] border border-[#2d2d3a] rounded-xl shadow-2xl z-30 max-h-48 overflow-y-auto p-1 divide-y divide-[#22222d]">
+                    {customerSearchResults.map((c) => (
+                      <div
+                        key={c.id}
+                        onClick={() => handleSelectCustomer(c)}
+                        className="p-2 hover:bg-orange-500/10 cursor-pointer rounded-lg transition flex items-center justify-between"
+                      >
+                        <div>
+                          <div className="text-xs font-bold text-white">{c.name}</div>
+                          <div className="text-[10px] text-zinc-400 font-mono">
+                            {c.phone || 'No phone'} {c.gstin ? `• GST: ${c.gstin}` : ''}
+                          </div>
+                        </div>
+                        <span className="text-[10px] text-orange-400 font-bold bg-orange-500/10 px-1.5 py-0.5 rounded border border-orange-500/20">
+                          Select
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <input
+                  type="text"
+                  placeholder="Phone (SMS/WhatsApp)"
+                  value={customerPhone}
+                  onChange={(e) => setCustomerPhone(e.target.value)}
+                  className="text-xs bg-[#191922] border-[#2d2d3a] font-medium"
+                />
+                <input
+                  type="text"
+                  placeholder="GSTIN (Optional)"
+                  value={customerGstin}
+                  onChange={(e) => setCustomerGstin(e.target.value.toUpperCase())}
+                  className="text-xs bg-[#191922] border-[#2d2d3a] font-medium uppercase font-mono"
+                />
+              </div>
+            </div>
+          )}
 
           {/* Payment Method Selector */}
           <div className="mb-4">
@@ -1035,6 +1232,153 @@ export const BillingPOS: React.FC = () => {
                 Next Customer (F2)
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Quick Register & Add Customer */}
+      {isAddCustomerModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-box w-full max-w-md p-6 bg-[#14141c] border border-[#2d2d3a] rounded-2xl shadow-2xl">
+            <div className="flex items-center justify-between pb-3 border-b border-[#252530] mb-4">
+              <h3 className="text-base font-bold text-white flex items-center gap-2">
+                <UserPlus size={18} className="text-orange-500" />
+                <span>Register New Customer</span>
+              </h3>
+              <button
+                type="button"
+                onClick={() => setIsAddCustomerModalOpen(false)}
+                className="text-zinc-400 hover:text-white p-1"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveNewCustomer} className="space-y-3">
+              <div>
+                <label className="block text-[11px] font-bold text-zinc-300 uppercase tracking-wider mb-1">
+                  Customer / Business Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Rajesh Kumar or Apex Trading"
+                  value={newCustomerForm.name}
+                  onChange={(e) => setNewCustomerForm({ ...newCustomerForm, name: e.target.value })}
+                  className="w-full text-xs bg-[#191922] border-[#2d2d3a] text-white"
+                  autoFocus
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-[11px] font-bold text-zinc-300 uppercase tracking-wider mb-1">
+                    Mobile Phone
+                  </label>
+                  <input
+                    type="tel"
+                    placeholder="e.g. 9876543210"
+                    value={newCustomerForm.phone}
+                    onChange={(e) => setNewCustomerForm({ ...newCustomerForm, phone: e.target.value })}
+                    className="w-full text-xs bg-[#191922] border-[#2d2d3a] text-white font-mono"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-bold text-zinc-300 uppercase tracking-wider mb-1">
+                    GSTIN (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="22AAAAA0000A1Z5"
+                    value={newCustomerForm.gstin}
+                    onChange={(e) => setNewCustomerForm({ ...newCustomerForm, gstin: e.target.value.toUpperCase() })}
+                    className="w-full text-xs bg-[#191922] border-[#2d2d3a] text-white uppercase font-mono"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-zinc-300 uppercase tracking-wider mb-1">
+                  Email (Optional)
+                </label>
+                <input
+                  type="email"
+                  placeholder="customer@example.com"
+                  value={newCustomerForm.email}
+                  onChange={(e) => setNewCustomerForm({ ...newCustomerForm, email: e.target.value })}
+                  className="w-full text-xs bg-[#191922] border-[#2d2d3a] text-white"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-[11px] font-bold text-zinc-300 uppercase tracking-wider mb-1">
+                    Address / Area
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Street, Landmark"
+                    value={newCustomerForm.address}
+                    onChange={(e) => setNewCustomerForm({ ...newCustomerForm, address: e.target.value })}
+                    className="w-full text-xs bg-[#191922] border-[#2d2d3a] text-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-bold text-zinc-300 uppercase tracking-wider mb-1">
+                    City
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="City"
+                    value={newCustomerForm.city}
+                    onChange={(e) => setNewCustomerForm({ ...newCustomerForm, city: e.target.value })}
+                    className="w-full text-xs bg-[#191922] border-[#2d2d3a] text-white"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-zinc-300 uppercase tracking-wider mb-1">
+                  Khata / Credit Limit (₹)
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  step="100"
+                  placeholder="0"
+                  value={newCustomerForm.credit_limit}
+                  onChange={(e) => setNewCustomerForm({ ...newCustomerForm, credit_limit: e.target.value })}
+                  className="w-full text-xs bg-[#191922] border-[#2d2d3a] text-white font-mono"
+                />
+              </div>
+
+              <div className="flex gap-2 pt-3">
+                <button
+                  type="button"
+                  onClick={() => setIsAddCustomerModalOpen(false)}
+                  className="btn btn-secondary flex-1 text-xs"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSavingCustomer}
+                  className="btn btn-primary flex-1 text-xs font-bold flex items-center justify-center gap-1.5"
+                >
+                  {isSavingCustomer ? (
+                    <>
+                      <span className="loading-spinner w-3.5 h-3.5" />
+                      <span>Saving...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Check size={14} />
+                      <span>Save & Attach</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

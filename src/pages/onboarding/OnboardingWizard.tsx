@@ -95,6 +95,22 @@ export const OnboardingWizard: React.FC = () => {
   const [logoUrl, setLogoUrl] = useState('');
   const logoInputRef = React.useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    if (company) {
+      if (company.name && company.name !== 'My Business' && company.name !== 'SmartBiz Test Restaurant') {
+        setCompanyName(company.name);
+      }
+      if (company.business_category) {
+        setSelectedCategory(company.business_category as BusinessCategory);
+      }
+      if (company.phone) setPhone(company.phone);
+      if (company.gstin) setGstin(company.gstin);
+      if (company.city) setCity(company.city);
+      if (company.state) setState(company.state);
+      if (company.logo_path) setLogoUrl(company.logo_path);
+    }
+  }, [company]);
+
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -184,19 +200,17 @@ export const OnboardingWizard: React.FC = () => {
     }
 
     try {
-      if (!company) {
-        await createCompany({
-          name: companyName,
-          business_category: selectedCategory,
-          logo_path: logoUrl || undefined,
-          phone,
-          gstin,
-          city,
-          state,
-          currency_code: currencyCode,
-          currency_symbol: currencySymbol,
-        });
-      }
+      await createCompany({
+        name: companyName,
+        business_category: selectedCategory,
+        logo_path: logoUrl || undefined,
+        phone,
+        gstin,
+        city,
+        state,
+        currency_code: currencyCode,
+        currency_symbol: currencySymbol,
+      });
       setStep(3);
     } catch (e: any) {
       alert('Failed to save business info: ' + (e.response?.data?.detail || e.message));

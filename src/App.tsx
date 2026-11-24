@@ -36,7 +36,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
     return <Navigate to="/login" replace />;
   }
 
-  if (company && !company.is_onboarding_complete) {
+  if (!company || !company.is_onboarding_complete) {
     return <Navigate to="/onboarding" replace />;
   }
 
@@ -52,7 +52,7 @@ const RootRedirect: React.FC = () => {
   }
 
   if (!token) return <Navigate to="/login" replace />;
-  if (company && !company.is_onboarding_complete) return <Navigate to="/onboarding" replace />;
+  if (!company || !company.is_onboarding_complete) return <Navigate to="/onboarding" replace />;
   return <Navigate to="/dashboard" replace />;
 };
 

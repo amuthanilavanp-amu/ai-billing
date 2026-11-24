@@ -60,7 +60,13 @@ export const Sidebar: React.FC = () => {
               {company.business_category ? company.business_category.replace(/_/g, ' ') : 'Store'}
             </div>
           </div>
-          <span className="w-2 h-2 rounded-full bg-orange-500 shadow-sm shadow-orange-500/50 flex-shrink-0" title="Active Business" />
+          <NavLink
+            to="/onboarding"
+            className="text-[10px] bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 px-2 py-0.5 rounded border border-orange-500/40 font-semibold transition flex-shrink-0"
+            title="Change business category & setup wizard"
+          >
+            Switch
+          </NavLink>
         </div>
       )}
 
