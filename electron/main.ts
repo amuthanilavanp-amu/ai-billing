@@ -125,7 +125,7 @@ function createWindow(): void {
     minWidth: 1024,
     minHeight: 700,
     title: 'SmartBiz AI',
-    backgroundColor: '#0f172a',
+    backgroundColor: '#09090b',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
