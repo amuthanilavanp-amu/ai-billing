@@ -249,3 +249,76 @@ def test_create_custom_user_and_login():
     assert login_res.status_code == 200
     assert login_res.json()["username"] == test_user
     assert "access_token" in login_res.json()
+
+
+def test_comprehensive_analytics_suite():
+    """Verify all deep business intelligence and analytics endpoints."""
+    login_res = client.post(
+        "/api/v1/auth/token",
+        data={"username": "admin", "password": "Password123!"},
+    )
+    token = login_res.json()["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    # 1. Dashboard overview
+    dash_res = client.get("/api/v1/analytics/dashboard?preset=all_time", headers=headers)
+    assert dash_res.status_code == 200
+    dash_data = dash_res.json()
+    assert "sales" in dash_data
+    assert "profitability" in dash_data
+    assert "today" in dash_data
+    assert "products" in dash_data
+    assert "average_invoice" in dash_data["sales"]
+    assert "gross_margin_percent" in dash_data["profitability"]
+
+    # 2. Top products (volume, revenue, profit)
+    top_res = client.get("/api/v1/analytics/top-products?preset=all_time", headers=headers)
+    assert top_res.status_code == 200
+    top_data = top_res.json()
+    assert "by_volume" in top_data
+    assert "by_revenue" in top_data
+    assert "by_profit" in top_data
+
+    # 3. Product velocity (fast, slow, dead stock)
+    vel_res = client.get("/api/v1/analytics/product-velocity?preset=all_time", headers=headers)
+    assert vel_res.status_code == 200
+    vel_data = vel_res.json()
+    assert "fast_moving" in vel_data
+    assert "slow_moving" in vel_data
+    assert "dead_stock" in vel_data
+    assert "total_capital_blocked" in vel_data
+
+    # 4. Category breakdown
+    cat_res = client.get("/api/v1/analytics/category-breakdown?preset=all_time", headers=headers)
+    assert cat_res.status_code == 200
+    assert isinstance(cat_res.json(), list)
+
+    # 5. Payment breakdown
+    pay_res = client.get("/api/v1/analytics/payment-breakdown?preset=all_time", headers=headers)
+    assert pay_res.status_code == 200
+    assert isinstance(pay_res.json(), list)
+
+    # 6. Hourly distribution
+    hour_res = client.get("/api/v1/analytics/hourly-distribution?preset=all_time", headers=headers)
+    assert hour_res.status_code == 200
+    hour_data = hour_res.json()
+    assert len(hour_data) > 0
+    assert "hour" in hour_data[0]
+
+    # 7. Customer insights
+    cust_res = client.get("/api/v1/analytics/customer-insights?preset=all_time", headers=headers)
+    assert cust_res.status_code == 200
+    cust_data = cust_res.json()
+    assert "top_customers" in cust_data
+    assert "walkin_vs_registered" in cust_data
+
+    # 8. Sales trend
+    trend_res = client.get("/api/v1/analytics/sales-trend?days=14", headers=headers)
+    assert trend_res.status_code == 200
+    assert len(trend_res.json()) == 14
+
+    # 9. GST summary with slabs
+    gst_res = client.get("/api/v1/analytics/gst-summary?preset=all_time", headers=headers)
+    assert gst_res.status_code == 200
+    assert "slabs" in gst_res.json()
+
