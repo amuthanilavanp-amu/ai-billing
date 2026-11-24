@@ -10,9 +10,15 @@ export const Header: React.FC<{ title?: string }> = ({ title }) => {
   return (
     <header className="topbar">
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-lg bg-orange-500/15 border border-orange-500/30 flex items-center justify-center text-orange-400">
-          <Store size={18} />
-        </div>
+        {company?.logo_path ? (
+          <div className="w-8 h-8 rounded-lg overflow-hidden bg-black/60 border border-orange-500/30 flex items-center justify-center p-0.5 flex-shrink-0">
+            <img src={company.logo_path} alt={company.name} className="w-full h-full object-contain rounded" />
+          </div>
+        ) : (
+          <div className="w-8 h-8 rounded-lg bg-orange-500/15 border border-orange-500/30 flex items-center justify-center text-orange-400 flex-shrink-0">
+            <Store size={18} />
+          </div>
+        )}
         <div>
           <span className="font-bold text-white text-sm tracking-tight">
             {company?.name || 'SmartBiz AI'}

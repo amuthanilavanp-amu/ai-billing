@@ -8,6 +8,9 @@ import {
   Shield,
   CheckCircle,
   FileText,
+  Upload,
+  Image as ImageIcon,
+  X,
 } from 'lucide-react';
 import apiClient from '../../api/client';
 import { useBusiness } from '../../context/BusinessContext';
@@ -15,8 +18,11 @@ import { useBusiness } from '../../context/BusinessContext';
 export const SettingsPage: React.FC = () => {
   const { company, updateCompany } = useBusiness();
 
+  const logoInputRef = React.useRef<HTMLInputElement>(null);
+
   const [formData, setFormData] = useState({
     name: '',
+    logo_path: '',
     gstin: '',
     phone: '',
     email: '',
@@ -32,6 +38,22 @@ export const SettingsPage: React.FC = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload a valid image file (PNG, JPG, SVG, WebP).');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (event.target?.result) {
+        setFormData((prev) => ({ ...prev, logo_path: event.target?.result as string }));
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   // Backup state
   const [backups, setBackups] = useState<any[]>([]);
   const [isBackingUp, setIsBackingUp] = useState(false);
@@ -41,6 +63,7 @@ export const SettingsPage: React.FC = () => {
     if (company) {
       setFormData({
         name: company.name || '',
+        logo_path: company.logo_path || '',
         gstin: company.gstin || '',
         phone: company.phone || '',
         email: company.email || '',
@@ -125,6 +148,58 @@ export const SettingsPage: React.FC = () => {
         </div>
 
         <form onSubmit={handleSaveProfile} className="space-y-4">
+          {/* Business Logo Field */}
+          <div className="p-4 rounded-xl bg-[#14141c] border border-[#272736] flex items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-xl border-2 border-dashed border-[#3a3a4a] bg-black/40 flex items-center justify-center overflow-hidden flex-shrink-0">
+                {formData.logo_path ? (
+                  <img src={formData.logo_path} alt="Business Logo" className="w-full h-full object-contain p-1" />
+                ) : (
+                  <ImageIcon size={26} className="text-zinc-500" />
+                )}
+              </div>
+              <div>
+                <div className="text-xs font-bold text-white flex items-center gap-2">
+                  <span>Store Logo Image</span>
+                  <span className="text-[10px] text-orange-400 font-semibold px-1.5 py-0.5 rounded bg-orange-500/10 border border-orange-500/20">
+                    Printed on Bills & Receipts
+                  </span>
+                </div>
+                <p className="text-[11px] text-zinc-400 mt-0.5">
+                  Your official logo is printed at the top of customer invoices and POS receipts.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <input
+                ref={logoInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleLogoUpload}
+                className="hidden"
+              />
+              <button
+                type="button"
+                onClick={() => logoInputRef.current?.click()}
+                className="btn btn-secondary btn-sm text-xs flex items-center gap-1.5 cursor-pointer"
+              >
+                <Upload size={14} />
+                <span>{formData.logo_path ? 'Change Logo' : 'Upload Logo'}</span>
+              </button>
+              {formData.logo_path && (
+                <button
+                  type="button"
+                  onClick={() => setFormData((prev) => ({ ...prev, logo_path: '' }))}
+                  className="p-1.5 rounded-lg bg-red-950/40 border border-red-500/30 text-red-400 hover:text-red-300 cursor-pointer"
+                  title="Remove Logo"
+                >
+                  <X size={14} />
+                </button>
+              )}
+            </div>
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-semibold text-slate-300 mb-1">Company / Store Name *</label>

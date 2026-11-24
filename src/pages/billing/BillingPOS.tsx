@@ -431,6 +431,17 @@ export const BillingPOS: React.FC = () => {
         {/* Top Scanner & Search Bar */}
         <div className="p-3.5 border-b border-[#252530] bg-[#141419] flex flex-wrap gap-3 items-center justify-between">
           <div className="flex items-center gap-3 flex-1 min-w-[320px]">
+            {/* Store Logo badge */}
+            {company?.logo_path ? (
+              <div className="w-10 h-10 rounded-xl overflow-hidden bg-black/60 border border-[#2e2e3d] flex items-center justify-center p-0.5 flex-shrink-0" title={company.name}>
+                <img src={company.logo_path} alt={company.name} className="w-full h-full object-contain rounded-lg" />
+              </div>
+            ) : (
+              <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400 flex-shrink-0" title={company?.name || 'SmartBiz'}>
+                <ShoppingBag size={20} />
+              </div>
+            )}
+
             {/* Barcode scan input */}
             <form onSubmit={handleBarcodeSubmit} className="search-bar w-80 bg-[#1c1c24] border-[#313140]">
               <Barcode size={20} className="text-orange-500 flex-shrink-0" />
@@ -929,7 +940,13 @@ export const BillingPOS: React.FC = () => {
             <div className="bg-black/90 p-5 rounded-xl border border-zinc-700 text-left font-mono text-xs mb-4 space-y-2 text-zinc-200 shadow-inner">
               {/* Receipt Logo & Header */}
               <div className="text-center pb-2 border-b border-dashed border-zinc-700">
-                <Logo variant="receipt" size="sm" className="mb-2" />
+                <Logo
+                  variant="receipt"
+                  size="md"
+                  logoUrl={company?.logo_path}
+                  companyName={company?.name}
+                  className="mb-2"
+                />
                 <div className="text-sm font-bold text-white">{company?.name || 'SmartBiz AI'}</div>
                 {company?.address_line1 && (
                   <div className="text-[10px] text-zinc-400">{company.address_line1}, {company.city}</div>

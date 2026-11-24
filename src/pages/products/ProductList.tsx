@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Package,
   Plus,
@@ -16,6 +17,7 @@ import { useBusiness } from '../../context/BusinessContext';
 import { Product } from '../../types';
 
 export const ProductList: React.FC = () => {
+  const navigate = useNavigate();
   const { company } = useBusiness();
 
   const [products, setProducts] = useState<Product[]>([]);
@@ -158,10 +160,13 @@ export const ProductList: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          <a href="/bulk-import" className="btn btn-secondary btn-sm flex items-center gap-1.5">
+          <button
+            onClick={() => navigate('/bulk-import')}
+            className="btn btn-secondary btn-sm flex items-center gap-1.5 cursor-pointer"
+          >
             <FileSpreadsheet size={15} />
             <span>Bulk Import / Export</span>
-          </a>
+          </button>
           <button onClick={openCreateModal} className="btn btn-primary btn-sm flex items-center gap-1.5">
             <Plus size={15} />
             <span>Add Single Product</span>
@@ -198,9 +203,9 @@ export const ProductList: React.FC = () => {
               <button onClick={openCreateModal} className="btn btn-primary btn-sm">
                 Add Product
               </button>
-              <a href="/catalogue" className="btn btn-secondary btn-sm">
+              <button onClick={() => navigate('/catalogue')} className="btn btn-secondary btn-sm cursor-pointer">
                 Browse Starter Catalogue
-              </a>
+              </button>
             </div>
           </div>
         ) : (

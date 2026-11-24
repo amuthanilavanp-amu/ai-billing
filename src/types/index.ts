@@ -44,6 +44,7 @@ export interface Company {
   id: number;
   name: string;
   business_category: BusinessCategory;
+  logo_path?: string;
   gstin?: string;
   pan?: string;
   phone?: string;

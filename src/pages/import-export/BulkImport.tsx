@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Upload,
   Download,
@@ -24,6 +25,7 @@ interface PreviewData {
 }
 
 export const BulkImport: React.FC = () => {
+  const navigate = useNavigate();
   const { company } = useBusiness();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -422,9 +424,9 @@ export const BulkImport: React.FC = () => {
                 >
                   Import Another File
                 </button>
-                <a href="/products" className="btn btn-primary">
+                <button onClick={() => navigate('/products')} className="btn btn-primary cursor-pointer">
                   View Product Inventory
-                </a>
+                </button>
               </div>
             </div>
           )}

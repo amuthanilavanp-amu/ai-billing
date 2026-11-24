@@ -49,7 +49,7 @@ export const Sidebar: React.FC = () => {
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">
-        <Logo variant="full" size="md" />
+        <Logo variant="full" size="md" logoUrl={company?.logo_path} companyName={company?.name} />
       </div>
 
       {company?.name && (

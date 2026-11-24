@@ -15,6 +15,7 @@ router = APIRouter()
 class CompanyCreate(BaseModel):
     name: str
     business_category: str = "other"
+    logo_path: Optional[str] = None
     address_line1: Optional[str] = None
     address_line2: Optional[str] = None
     city: Optional[str] = None
@@ -68,6 +69,7 @@ def get_current_company(db: Session = Depends(get_db), current_user: User = Depe
         "id": company.id,
         "name": company.name,
         "business_category": company.business_category.value,
+        "logo_path": company.logo_path,
         "gstin": company.gstin,
         "phone": company.phone,
         "email": company.email,

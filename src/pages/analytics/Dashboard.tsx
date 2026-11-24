@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
   TrendingUp,
@@ -31,6 +32,7 @@ import { useBusiness } from '../../context/BusinessContext';
 type TabType = 'overview' | 'top_products' | 'velocity_rush' | 'categories_payments' | 'customers' | 'dead_stock';
 
 export const Dashboard: React.FC = () => {
+  const navigate = useNavigate();
   const { company } = useBusiness();
 
   // Active view tab & date preset
@@ -159,7 +161,7 @@ export const Dashboard: React.FC = () => {
           <button
             onClick={() => loadAllAnalytics(preset)}
             disabled={isRefreshing}
-            className="btn btn-secondary btn-sm flex items-center gap-1.5"
+            className="btn btn-secondary btn-sm flex items-center gap-1.5 cursor-pointer"
             title="Refresh analytics data"
           >
             <RefreshCw size={14} className={isRefreshing ? 'animate-spin text-orange-400' : ''} />
@@ -168,16 +170,19 @@ export const Dashboard: React.FC = () => {
 
           <button
             onClick={() => window.print()}
-            className="btn btn-secondary btn-sm flex items-center gap-1.5"
+            className="btn btn-secondary btn-sm flex items-center gap-1.5 cursor-pointer"
           >
             <Printer size={14} />
             <span>Print Report</span>
           </button>
 
-          <a href="/billing" className="btn btn-primary btn-sm flex items-center gap-1.5">
+          <button
+            onClick={() => navigate('/billing')}
+            className="btn btn-primary btn-sm flex items-center gap-1.5 cursor-pointer"
+          >
             <ReceiptText size={15} />
             <span>Open POS Terminal</span>
-          </a>
+          </button>
         </div>
       </div>
 
@@ -200,7 +205,7 @@ export const Dashboard: React.FC = () => {
             <button
               key={item.id}
               onClick={() => handlePresetChange(item.id)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap cursor-pointer ${
                 preset === item.id
                   ? 'bg-orange-500 text-white shadow-md shadow-orange-500/20'
                   : 'bg-[#181820] text-zinc-400 hover:text-white hover:bg-[#20202b]'
@@ -229,7 +234,7 @@ export const Dashboard: React.FC = () => {
           <button
             onClick={handleApplyCustomDates}
             disabled={!customFrom || !customTo}
-            className="btn btn-secondary btn-sm text-xs py-1 px-3"
+            className="btn btn-secondary btn-sm text-xs py-1 px-3 cursor-pointer"
           >
             Apply
           </button>
@@ -410,7 +415,7 @@ export const Dashboard: React.FC = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as TabType)}
-              className={`flex items-center gap-2 py-3 px-4 text-xs font-bold border-b-2 transition whitespace-nowrap ${
+              className={`flex items-center gap-2 py-3 px-4 text-xs font-bold border-b-2 transition whitespace-nowrap cursor-pointer ${
                 isActive
                   ? 'border-orange-500 text-white bg-orange-500/10 rounded-t-lg'
                   : 'border-transparent text-zinc-400 hover:text-white hover:bg-[#16161f]'
@@ -526,7 +531,7 @@ export const Dashboard: React.FC = () => {
                 </h3>
                 <button
                   onClick={() => setActiveTab('top_products')}
-                  className="text-xs text-orange-400 hover:underline flex items-center gap-1 font-semibold"
+                  className="text-xs text-orange-400 hover:underline flex items-center gap-1 font-semibold cursor-pointer"
                 >
                   View All Detailed <ChevronRight size={14} />
                 </button>
@@ -621,7 +626,7 @@ export const Dashboard: React.FC = () => {
               <div className="flex items-center gap-1.5 p-1 bg-[#181820] rounded-xl border border-[#272733]">
                 <button
                   onClick={() => setTopSortBy('revenue')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
                     topSortBy === 'revenue'
                       ? 'bg-orange-500 text-white shadow-md'
                       : 'text-zinc-400 hover:text-white'
@@ -631,7 +636,7 @@ export const Dashboard: React.FC = () => {
                 </button>
                 <button
                   onClick={() => setTopSortBy('volume')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
                     topSortBy === 'volume'
                       ? 'bg-orange-500 text-white shadow-md'
                       : 'text-zinc-400 hover:text-white'
@@ -641,7 +646,7 @@ export const Dashboard: React.FC = () => {
                 </button>
                 <button
                   onClick={() => setTopSortBy('profit')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
                     topSortBy === 'profit'
                       ? 'bg-orange-500 text-white shadow-md'
                       : 'text-zinc-400 hover:text-white'

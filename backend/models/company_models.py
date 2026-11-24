@@ -59,7 +59,7 @@ class Company(Base):
     business_category: Mapped[BusinessCategory] = mapped_column(
         Enum(BusinessCategory), default=BusinessCategory.OTHER
     )
-    logo_path: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+    logo_path: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     address_line1: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
     address_line2: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
     city: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)

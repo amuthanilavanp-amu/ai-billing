@@ -36,6 +36,8 @@ import {
   Upload,
   Search,
   Check,
+  Image as ImageIcon,
+  X,
 } from 'lucide-react';
 import apiClient from '../../api/client';
 import { useBusiness } from '../../context/BusinessContext';
@@ -90,6 +92,24 @@ export const OnboardingWizard: React.FC = () => {
   const [state, setState] = useState('');
   const [currencyCode, setCurrencyCode] = useState('INR');
   const [currencySymbol, setCurrencySymbol] = useState('₹');
+  const [logoUrl, setLogoUrl] = useState('');
+  const logoInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file (PNG, JPG, SVG, WebP).');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (event.target?.result) {
+        setLogoUrl(event.target.result as string);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   // Catalogue starter selection
   const [catalogueCategories, setCatalogueCategories] = useState<CatalogueCategory[]>([]);
@@ -168,6 +188,7 @@ export const OnboardingWizard: React.FC = () => {
         await createCompany({
           name: companyName,
           business_category: selectedCategory,
+          logo_path: logoUrl || undefined,
           phone,
           gstin,
           city,
@@ -309,6 +330,58 @@ export const OnboardingWizard: React.FC = () => {
               </div>
 
               <div className="space-y-4">
+                {/* Business Logo Upload */}
+                <div className="p-4 rounded-xl bg-[#14141c] border border-[#272736] flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-xl border-2 border-dashed border-[#3a3a4a] bg-black/40 flex items-center justify-center overflow-hidden flex-shrink-0 relative">
+                      {logoUrl ? (
+                        <img src={logoUrl} alt="Store Logo Preview" className="w-full h-full object-contain p-1" />
+                      ) : (
+                        <ImageIcon size={26} className="text-zinc-500" />
+                      )}
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-white flex items-center gap-2">
+                        <span>Business Logo Image</span>
+                        <span className="text-[10px] text-orange-400 font-semibold px-1.5 py-0.5 rounded bg-orange-500/10 border border-orange-500/20">
+                          Shows on POS Bills & Thermal Receipts
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-zinc-400 mt-0.5">
+                        Upload your shop or company logo (PNG, JPG, SVG, WebP).
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <input
+                      ref={logoInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleLogoChange}
+                      className="hidden"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => logoInputRef.current?.click()}
+                      className="btn btn-secondary btn-sm text-xs flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <Upload size={14} />
+                      <span>{logoUrl ? 'Change Logo' : 'Upload Logo'}</span>
+                    </button>
+                    {logoUrl && (
+                      <button
+                        type="button"
+                        onClick={() => setLogoUrl('')}
+                        className="p-1.5 rounded-lg bg-red-950/40 border border-red-500/30 text-red-400 hover:text-red-300 cursor-pointer"
+                        title="Remove Logo"
+                      >
+                        <X size={14} />
+                      </button>
+                    )}
+                  </div>
+                </div>
+
                 <div>
                   <label className="block text-xs font-semibold text-slate-300 mb-1">
                     Business / Store Name <span className="text-red-400">*</span>

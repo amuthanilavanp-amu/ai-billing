@@ -1,16 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 interface LogoProps {
   variant?: 'full' | 'compact' | 'icon' | 'receipt';
   size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
+  logoUrl?: string | null;
+  companyName?: string;
 }
 
 export const Logo: React.FC<LogoProps> = ({
   variant = 'full',
   size = 'md',
   className = '',
+  logoUrl,
+  companyName,
 }) => {
+  const [imageError, setImageError] = useState(false);
+
   // Dimensions based on size
   const iconSizes = {
     sm: 28,
@@ -21,8 +27,8 @@ export const Logo: React.FC<LogoProps> = ({
 
   const currentIconSize = iconSizes[size];
 
-  // SVG Icon: Bold Black & Orange geometric brand mark
-  const BrandIcon = (
+  // Vector Brand Mark (Default Fallback)
+  const BrandVectorIcon = (
     <svg
       width={currentIconSize}
       height={currentIconSize}
@@ -84,38 +90,64 @@ export const Logo: React.FC<LogoProps> = ({
     </svg>
   );
 
+  // If a custom logo image is provided and hasn't errored
+  const DisplayIcon =
+    logoUrl && !imageError ? (
+      <div
+        style={{ width: currentIconSize, height: currentIconSize }}
+        className="rounded-xl overflow-hidden bg-black/40 border border-[#2e2e3a] flex items-center justify-center p-0.5 flex-shrink-0"
+      >
+        <img
+          src={logoUrl}
+          alt={companyName || 'Business Logo'}
+          onError={() => setImageError(true)}
+          className="w-full h-full object-contain rounded-lg"
+        />
+      </div>
+    ) : (
+      BrandVectorIcon
+    );
+
   if (variant === 'icon') {
-    return <div className={`inline-flex items-center ${className}`}>{BrandIcon}</div>;
+    return <div className={`inline-flex items-center ${className}`}>{DisplayIcon}</div>;
   }
 
   if (variant === 'receipt') {
     return (
       <div className={`flex flex-col items-center justify-center text-center ${className}`}>
-        <div className="flex items-center gap-2">
-          {BrandIcon}
-          <div className="text-left font-sans">
-            <div className="text-base font-extrabold tracking-tight text-white flex items-center gap-1.5">
-              <span>SmartBiz</span>
-              <span className="bg-orange-500 text-black text-[10px] font-black px-1.5 py-0.5 rounded">
-                AI
-              </span>
-            </div>
-            <div className="text-[10px] uppercase tracking-wider text-orange-400 font-medium">
-              Universal POS & Billing
+        {logoUrl && !imageError ? (
+          <div className="mb-2 max-w-[120px] max-h-[60px] flex items-center justify-center">
+            <img
+              src={logoUrl}
+              alt={companyName || 'Store Logo'}
+              onError={() => setImageError(true)}
+              className="max-h-12 max-w-[120px] object-contain"
+            />
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 mb-1">
+            {DisplayIcon}
+            <div className="text-left font-sans">
+              <div className="text-base font-extrabold tracking-tight text-black dark:text-white flex items-center gap-1.5">
+                <span>SmartBiz</span>
+                <span className="bg-orange-500 text-white text-[10px] font-black px-1.5 py-0.5 rounded">
+                  AI
+                </span>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     );
   }
 
   return (
     <div className={`inline-flex items-center gap-3 select-none ${className}`}>
-      {BrandIcon}
+      {DisplayIcon}
       <div className="flex flex-col">
         <div className="flex items-center gap-1.5 leading-none">
           <span className="font-extrabold text-white text-base tracking-tight font-sans">
-            SmartBiz
+            {companyName || 'SmartBiz'}
           </span>
           <span className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black text-[10px] px-1.5 py-0.5 rounded tracking-wide shadow-sm shadow-orange-500/30">
             AI
