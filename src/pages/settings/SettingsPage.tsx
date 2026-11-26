@@ -318,7 +318,7 @@ export const SettingsPage: React.FC = () => {
         </div>
 
         <p className="text-xs text-slate-400 mb-4 leading-relaxed">
-          SmartBiz AI utilizes SQLite with Write-Ahead Logging (WAL). Creating a snapshot executes an online
+          The Cronus utilizes SQLite with Write-Ahead Logging (WAL). Creating a snapshot executes an online
           checkpointed atomic backup directly to your local backup directory, ensuring zero downtime and zero
           data corruption.
         </p>

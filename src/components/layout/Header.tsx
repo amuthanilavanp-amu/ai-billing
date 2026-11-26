@@ -21,7 +21,7 @@ export const Header: React.FC<{ title?: string }> = ({ title }) => {
         )}
         <div>
           <span className="font-bold text-white text-sm tracking-tight">
-            {company?.name || 'SmartBiz AI'}
+            {company?.name || 'My Business'}
           </span>
           {company?.gstin && (
             <span className="badge badge-gray text-[10px] ml-2">GST: {company.gstin}</span>
@@ -52,7 +52,7 @@ export const Header: React.FC<{ title?: string }> = ({ title }) => {
 
         <button
           onClick={() => {
-            if (window.confirm('Are you sure you want to sign out from SmartBiz AI?')) {
+            if (window.confirm('Are you sure you want to sign out from The Cronus?')) {
               logout();
             }
           }}

@@ -64,8 +64,8 @@ async def lifespan(app: FastAPI):
 # ─── FastAPI App ───────────────────────────────────────────────────────────────
 
 app = FastAPI(
-    title="SmartBiz AI API",
-    description="Local backend for SmartBiz AI desktop billing software",
+    title="The Cronus API",
+    description="Local backend for The Cronus desktop billing software",
     version="1.0.0",
     docs_url="/api/docs",
     redoc_url="/api/redoc",
@@ -114,7 +114,7 @@ app.include_router(backup.router,        prefix=f"{API}/backup",       tags=["Ba
 
 @app.get("/health")
 async def health():
-    return {"status": "ok", "service": "SmartBiz AI", "version": "1.0.0"}
+    return {"status": "ok", "service": "The Cronus", "version": "1.0.0"}
 
 # ─── Serve Frontend UI at Root & SPA Fallback ────────────────────────────────
 DIST_DIR = Path(__file__).resolve().parent.parent / "dist"
@@ -127,7 +127,7 @@ async def serve_root():
     index_file = DIST_DIR / "index.html"
     if index_file.exists():
         return FileResponse(index_file)
-    return JSONResponse({"status": "ok", "service": "SmartBiz AI", "message": "UI build not found in dist. Run npm run build."})
+    return JSONResponse({"status": "ok", "service": "The Cronus", "message": "UI build not found in dist. Run npm run build."})
 
 @app.get("/{full_path:path}")
 async def serve_spa_fallback(full_path: str):

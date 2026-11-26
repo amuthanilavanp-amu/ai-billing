@@ -39,6 +39,8 @@ class UserCreate(BaseModel):
     email: Optional[str] = None
     role: str = "cashier"
     company_id: Optional[int] = None
+    shop_name: Optional[str] = None
+    shop_logo: Optional[str] = None
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
@@ -147,6 +149,24 @@ def register_user(user_data: UserCreate, db: Session = Depends(get_db)):
             existing_user.hashed_password = get_password_hash(user_data.password)
             if user_data.full_name:
                 existing_user.full_name = user_data.full_name
+            if user_data.shop_name or user_data.shop_logo:
+                comp = db.query(Company).filter(Company.id == existing_user.company_id).first() if existing_user.company_id else db.query(Company).first()
+                if comp:
+                    if user_data.shop_name and user_data.shop_name.strip():
+                        comp.name = user_data.shop_name.strip()
+                    if user_data.shop_logo:
+                        comp.logo_path = user_data.shop_logo
+                else:
+                    comp = Company(
+                        name=user_data.shop_name.strip() if user_data.shop_name else "My Business",
+                        logo_path=user_data.shop_logo,
+                        currency_code="INR",
+                        currency_symbol="₹",
+                        invoice_prefix="INV",
+                    )
+                    db.add(comp)
+                    db.flush()
+                    existing_user.company_id = comp.id
             db.commit()
             access_token = create_access_token(data={"sub": existing_user.username, "user_id": existing_user.id})
             return Token(
@@ -169,9 +189,33 @@ def register_user(user_data: UserCreate, db: Session = Depends(get_db)):
         if existing_email:
             clean_email = None  # Don't fail registration if placeholder email clashes
 
-    # Auto-link to existing company if none provided
+    # Auto-link or create company with shop_name and shop_logo
     company_id = user_data.company_id
-    if not company_id:
+    if user_data.shop_name or user_data.shop_logo:
+        comp = db.query(Company).filter(Company.id == company_id).first() if company_id else None
+        if not comp:
+            comp = db.query(Company).first()
+        if comp:
+            if user_data.shop_name and user_data.shop_name.strip():
+                comp.name = user_data.shop_name.strip()
+            if user_data.shop_logo:
+                comp.logo_path = user_data.shop_logo
+            db.commit()
+            db.refresh(comp)
+            company_id = comp.id
+        else:
+            comp = Company(
+                name=user_data.shop_name.strip() if user_data.shop_name else "My Business",
+                logo_path=user_data.shop_logo,
+                currency_code="INR",
+                currency_symbol="₹",
+                invoice_prefix="INV",
+            )
+            db.add(comp)
+            db.commit()
+            db.refresh(comp)
+            company_id = comp.id
+    elif not company_id:
         first_company = db.query(Company).first()
         if first_company:
             company_id = first_company.id

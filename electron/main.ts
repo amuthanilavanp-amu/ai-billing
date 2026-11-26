@@ -124,7 +124,8 @@ function createWindow(): void {
     height: 900,
     minWidth: 1024,
     minHeight: 700,
-    title: 'SmartBiz AI',
+    title: 'The Cronus',
+    icon: path.join(__dirname, '..', 'public', 'cronus-logo.png'),
     backgroundColor: '#09090b',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),

@@ -97,7 +97,7 @@ export const OnboardingWizard: React.FC = () => {
 
   useEffect(() => {
     if (company) {
-      if (company.name && company.name !== 'My Business' && company.name !== 'SmartBiz Test Restaurant') {
+      if (company.name) {
         setCompanyName(company.name);
       }
       if (company.business_category) {
@@ -257,7 +257,7 @@ export const OnboardingWizard: React.FC = () => {
           <div className="flex items-center gap-4">
             <Logo variant="compact" size="md" />
             <div>
-              <h1 className="text-xl font-bold text-white">SmartBiz AI Setup Wizard</h1>
+              <h1 className="text-xl font-bold text-white">The Cronus Setup Wizard</h1>
               <p className="text-xs text-slate-400 mt-1">
                 Configure your business catalogue, tax profile, and starting product inventory.
               </p>

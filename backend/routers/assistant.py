@@ -37,7 +37,7 @@ INTENT_PATTERNS = [
 ]
 
 OFF_TOPIC_RESPONSE = (
-    "I'm SmartBiz Assistant. I can help with your billing records, sales analytics, "
+    "I'm Cronus Assistant. I can help with your billing records, sales analytics, "
     "inventory, GST reports, forecasts, and purchase recommendations. "
     "Please ask a question related to your business data."
 )

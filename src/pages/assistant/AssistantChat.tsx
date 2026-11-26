@@ -12,7 +12,7 @@ export const AssistantChat: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       sender: 'assistant',
-      text: "Hello! I'm SmartBiz Assistant. I can assist you with your store's sales totals, inventory alerts, outstanding receivables, replenishment advice, and GST reports. How can I help you today?",
+      text: "Hello! I'm Cronus Assistant. I can assist you with your store's sales totals, inventory alerts, outstanding receivables, replenishment advice, and GST reports. How can I help you today?",
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     },
   ]);
@@ -82,7 +82,7 @@ export const AssistantChat: React.FC = () => {
           </div>
           <div>
             <h1 className="text-sm font-bold text-white flex items-center gap-2">
-              SmartBiz AI Assistant
+              The Cronus Assistant
               <span className="badge badge-orange text-[10px]">Restricted Local Agent</span>
             </h1>
             <p className="text-[11px] text-slate-400">

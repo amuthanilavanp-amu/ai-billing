@@ -564,3 +564,87 @@ input[type="checkbox"] {
   max-width: 320px;
   color: #71717a;
 }
+
+/* ─── Print Styles for Customer Bills & Receipts ──────────────────────────────── */
+@media print {
+  @page {
+    margin: 4mm;
+    size: auto;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    overflow: visible !important;
+    height: auto !important;
+  }
+
+  /* Hide everything except the receipt during print */
+  body * {
+    visibility: hidden;
+  }
+
+  #printable-receipt,
+  #printable-receipt * {
+    visibility: visible;
+  }
+
+  #printable-receipt {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    max-width: 80mm !important;
+    margin: 0 auto !important;
+    padding: 2mm !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: none !important;
+    box-shadow: none !important;
+    font-size: 11px !important;
+    line-height: 1.35 !important;
+  }
+
+  #printable-receipt .text-white {
+    color: #000000 !important;
+  }
+
+  #printable-receipt .text-zinc-200,
+  #printable-receipt .text-zinc-300,
+  #printable-receipt .text-zinc-400,
+  #printable-receipt .text-zinc-500 {
+    color: #333333 !important;
+  }
+
+  #printable-receipt .border-zinc-700 {
+    border-color: #000000 !important;
+  }
+
+  #printable-receipt .text-orange-400,
+  #printable-receipt .text-amber-400 {
+    color: #000000 !important;
+    font-weight: bold !important;
+  }
+
+  .modal-overlay {
+    position: static !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+  }
+
+  .modal-box {
+    box-shadow: none !important;
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+  }
+
+  /* Hide modal buttons during print */
+  .modal-box button,
+  .modal-box .btn,
+  .modal-box > div:first-child,
+  .modal-box > h3,
+  .modal-box > p:first-of-type {
+    display: none !important;
+  }
+}

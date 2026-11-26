@@ -147,7 +147,7 @@ def download_template_xlsx(template_type: str = "general"):
         # Instructions sheet
         ws_info = wb.create_sheet("Instructions")
         instructions = [
-            ["SmartBiz AI - Product Import Template"],
+            ["The Cronus - Product Import Template"],
             [""],
             ["INSTRUCTIONS:"],
             ["1. Do not change the header row."],

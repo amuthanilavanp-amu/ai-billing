@@ -34,7 +34,7 @@ export const Sidebar: React.FC = () => {
 
     { section: 'INTELLIGENCE' },
     { path: '/forecasting', label: 'Replenishment AI', icon: TrendingUp },
-    { path: '/assistant', label: 'SmartBiz Assistant', icon: Bot },
+    { path: '/assistant', label: 'Cronus Assistant', icon: Bot },
 
     { section: 'OPERATIONS' },
     { path: '/customers', label: 'Customers', icon: Users },
@@ -49,20 +49,27 @@ export const Sidebar: React.FC = () => {
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">
-        <Logo variant="full" size="md" logoUrl={company?.logo_path} companyName={company?.name} />
+        <Logo variant="full" size="md" />
       </div>
 
       {company?.name && (
-        <div className="px-5 py-2.5 bg-black/40 border-b border-zinc-800/80 flex items-center justify-between">
-          <div className="truncate pr-2">
-            <div className="text-xs font-bold text-white truncate">{company.name}</div>
-            <div className="text-[10px] text-orange-400 capitalize truncate font-medium">
-              {company.business_category ? company.business_category.replace(/_/g, ' ') : 'Store'}
+        <div className="px-4 py-2.5 bg-black/50 border-b border-zinc-800/80 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 truncate pr-1">
+            {company.logo_path ? (
+              <div className="w-8 h-8 rounded-lg overflow-hidden bg-black/60 border border-zinc-700/80 flex items-center justify-center p-0.5 flex-shrink-0">
+                <img src={company.logo_path} alt={company.name} className="w-full h-full object-contain rounded" />
+              </div>
+            ) : null}
+            <div className="truncate">
+              <div className="text-xs font-bold text-white truncate" title={company.name}>{company.name}</div>
+              <div className="text-[10px] text-amber-400 capitalize truncate font-medium">
+                {company.business_category ? company.business_category.replace(/_/g, ' ') : 'Store'}
+              </div>
             </div>
           </div>
           <NavLink
             to="/onboarding"
-            className="text-[10px] bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 px-2 py-0.5 rounded border border-orange-500/40 font-semibold transition flex-shrink-0"
+            className="text-[10px] bg-amber-500/15 hover:bg-amber-500/25 text-amber-400 px-2 py-0.5 rounded border border-amber-500/30 font-semibold transition flex-shrink-0"
             title="Change business category & setup wizard"
           >
             Switch
@@ -97,7 +104,7 @@ export const Sidebar: React.FC = () => {
       </nav>
 
       <div className="p-3.5 border-t border-zinc-800/80 bg-black/30 text-xs text-zinc-500 flex items-center justify-between">
-        <span className="text-[11px] font-mono">SmartBiz v1.0.0</span>
+        <span className="text-[11px] font-mono font-semibold text-zinc-400">The Cronus v1.0.0</span>
         <div className="flex items-center gap-1.5 text-[11px] text-zinc-400">
           <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
           <span>Local Engine</span>

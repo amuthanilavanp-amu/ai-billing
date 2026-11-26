@@ -7,8 +7,22 @@ interface AuthContextType {
   token: string | null;
   isLoading: boolean;
   login: (username: string, password: string) => Promise<void>;
-  registerUser: (data: { username: string; password: string; full_name: string; email?: string }) => Promise<void>;
-  registerFirstAdmin: (data: { username: string; password: string; full_name: string; email?: string }) => Promise<void>;
+  registerUser: (data: {
+    username: string;
+    password: string;
+    full_name: string;
+    email?: string;
+    shop_name?: string;
+    shop_logo?: string;
+  }) => Promise<void>;
+  registerFirstAdmin: (data: {
+    username: string;
+    password: string;
+    full_name: string;
+    email?: string;
+    shop_name?: string;
+    shop_logo?: string;
+  }) => Promise<void>;
   logout: () => void;
   needsSetup: boolean;
   checkSetupStatus: () => Promise<void>;
@@ -74,7 +88,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
   };
 
-  const registerFirstAdmin = async (data: { username: string; password: string; full_name: string; email?: string }) => {
+  const registerFirstAdmin = async (data: {
+    username: string;
+    password: string;
+    full_name: string;
+    email?: string;
+    shop_name?: string;
+    shop_logo?: string;
+  }) => {
     const res = await apiClient.post('/auth/register', data);
     const { access_token, user_id, full_name, role, company_id } = res.data;
     localStorage.setItem('smartbiz_token', access_token);

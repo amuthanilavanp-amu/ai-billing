@@ -124,7 +124,7 @@ export const BulkImport: React.FC = () => {
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `smartbiz_template_${templateType}.${format}`);
+      link.setAttribute('download', `cronus_template_${templateType}.${format}`);
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -141,7 +141,7 @@ export const BulkImport: React.FC = () => {
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `smartbiz_products_export.${format}`);
+      link.setAttribute('download', `cronus_products_export.${format}`);
       document.body.appendChild(link);
       link.click();
       link.remove();

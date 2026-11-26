@@ -544,7 +544,7 @@ export const BillingPOS: React.FC = () => {
                 <img src={company.logo_path} alt={company.name} className="w-full h-full object-contain rounded-lg" />
               </div>
             ) : (
-              <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400 flex-shrink-0" title={company?.name || 'SmartBiz'}>
+              <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400 flex-shrink-0" title={company?.name || 'Store'}>
                 <ShoppingBag size={20} />
               </div>
             )}
@@ -1134,17 +1134,21 @@ export const BillingPOS: React.FC = () => {
             </p>
 
             {/* Thermal / Printed Receipt Preview Container */}
-            <div className="bg-black/90 p-5 rounded-xl border border-zinc-700 text-left font-mono text-xs mb-4 space-y-2 text-zinc-200 shadow-inner">
-              {/* Receipt Logo & Header */}
+            <div id="printable-receipt" className="bg-black/90 p-5 rounded-xl border border-zinc-700 text-left font-mono text-xs mb-4 space-y-2 text-zinc-200 shadow-inner">
+              {/* Receipt Logo & Header - ONLY shows User's Shop Logo and Shop Name (Never software brand logo) */}
               <div className="text-center pb-2 border-b border-dashed border-zinc-700">
-                <Logo
-                  variant="receipt"
-                  size="md"
-                  logoUrl={company?.logo_path}
-                  companyName={company?.name}
-                  className="mb-2"
-                />
-                <div className="text-sm font-bold text-white">{company?.name || 'SmartBiz AI'}</div>
+                {company?.logo_path ? (
+                  <div className="mb-2 max-w-[140px] max-h-[70px] mx-auto flex items-center justify-center">
+                    <img
+                      src={company.logo_path}
+                      alt={company.name || 'Store Logo'}
+                      className="max-h-14 max-w-[140px] object-contain rounded"
+                    />
+                  </div>
+                ) : null}
+                <div className="text-sm font-extrabold text-white tracking-tight uppercase">
+                  {company?.name || 'Retail Store'}
+                </div>
                 {company?.address_line1 && (
                   <div className="text-[10px] text-zinc-400">{company.address_line1}, {company.city}</div>
                 )}

@@ -155,7 +155,7 @@ export const ReportsPage: React.FC = () => {
             <div className="mt-4 p-3 rounded-lg bg-orange-950/20 border border-orange-500/30 text-xs text-orange-300 flex items-start gap-2">
               <Info size={16} className="flex-shrink-0 mt-0.5" />
               <span>
-                <strong>Statutory Notice:</strong> {gstData.note} SmartBiz AI computes taxes strictly from the
+                <strong>Statutory Notice:</strong> {gstData.note} The Cronus computes taxes strictly from the
                 rates assigned to line items. It does not replace the professional advice of a Chartered
                 Accountant.
               </span>

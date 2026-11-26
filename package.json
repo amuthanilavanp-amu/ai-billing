@@ -1,7 +1,7 @@
 {
-  "name": "smartbiz-ai",
+  "name": "the-cronus",
   "version": "1.0.0",
-  "description": "SmartBiz AI - Universal Desktop Billing, Inventory, Analytics & Business Intelligence Software",
+  "description": "The Cronus - Professional Desktop Billing, Inventory & POS Software",
   "main": "dist-electron/main.js",
   "scripts": {
     "dev": "concurrently \"npm run dev:vite\" \"npm run dev:electron\"",
@@ -18,7 +18,7 @@
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "keywords": ["billing", "inventory", "pos", "gst", "invoice", "desktop", "electron"],
-  "author": "SmartBiz AI",
+  "author": "The Cronus",
   "license": "MIT",
   "dependencies": {
     "@tanstack/react-table": "^8.20.5",
@@ -57,9 +57,9 @@
     "wait-on": "^8.0.1"
   },
   "build": {
-    "appId": "com.smartbizai.app",
-    "productName": "SmartBiz AI",
-    "copyright": "Copyright © 2024 SmartBiz AI",
+    "appId": "com.thecronus.app",
+    "productName": "The Cronus",
+    "copyright": "Copyright © 2026 The Cronus",
     "directories": {
       "output": "release"
     },
